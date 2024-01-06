@@ -72,11 +72,11 @@
 
 class Graph {
   constructor() {
-    this.adjacencyList = {}
+    this.adjacencyList = {};
   }
 
   addVertex(vertex) {
-    if(!this.adjacencyList[vertex]) this.adjacencyList[vertex] = [];
+    if (!this.adjacencyList[vertex]) this.adjacencyList[vertex] = [];
   }
 
   addEdge(vertex1, vertex2) {
@@ -85,12 +85,27 @@ class Graph {
   }
 
   removeEdge(vertex1, vertex2) {
-    this.adjacencyList[vertex1] = this.adjacencyList[vertex1].filter(v => v !== vertex2);
-    this.adjacencyList[vertex2] = this.adjacencyList[vertex2].filter(v => v !== vertex1);
+    this.adjacencyList[vertex1] = this.adjacencyList[vertex1].filter(
+      (v) => v !== vertex2
+    );
+    this.adjacencyList[vertex2] = this.adjacencyList[vertex2].filter(
+      (v) => v !== vertex1
+    );
   }
 
+  // removeVertex(vertex) {
+  //   for (let v1 of this.adjacencyList[vertex]) {
+  //     for (let v2 of this.adjacencyList[v1]) {
+  //       this.adjacencyList[v2] = this.adjacencyList[v2].filter(
+  //         (v) => v !== vertex
+  //       );
+  //     }
+  //   }
+  //   delete this.adjacencyList[vertex];
+  // }
+
   removeVertex(vertex) {
-    while(this.adjacencyList[vertex].length) {
+    while (this.adjacencyList[vertex].length) {
       const adjacentVertex = this.adjacencyList[vertex].pop();
       this.removeEdge(vertex, adjacentVertex);
     }
@@ -98,31 +113,30 @@ class Graph {
   }
 }
 
-
 const g = new Graph();
-g.addVertex('Tokyo');
-g.addVertex('California');
-g.addVertex('Hongkong');
-g.addVertex('Islamabad');
-g.addVertex('Istanbul');
-g.addVertex('Lahore');
-g.addVertex('Karachi');
+g.addVertex("Tokyo");
+g.addVertex("California");
+g.addVertex("Hongkong");
+g.addVertex("Islamabad");
+g.addVertex("Istanbul");
+g.addVertex("Lahore");
+g.addVertex("Karachi");
 
- 
-g.addEdge('Tokyo', 'Islamabad');
-g.addEdge('Tokyo', 'Hongkong');
-g.addEdge('Tokyo', 'Lahore');
-g.addEdge('Islamabad', 'Hongkong');
-g.addEdge('Hongkong', 'Lahore');
-g.addEdge('Hongkong', 'Karachi');
+g.addEdge("Tokyo", "Islamabad");
+g.addEdge("Tokyo", "Hongkong");
+g.addEdge("Tokyo", "Lahore");
+g.addEdge("Islamabad", "Hongkong");
+g.addEdge("Hongkong", "Lahore");
+g.addEdge("Hongkong", "Karachi");
 
-g.addEdge('Islamabad', 'California');
-g.addEdge('Lahore', 'Karachi');
-g.addEdge('Istanbul', 'Karachi');
-g.addEdge('Islamabad', 'Istanbul');
+g.addEdge("Islamabad", "California");
+g.addEdge("Lahore", "Karachi");
+g.addEdge("Istanbul", "Karachi");
+g.addEdge("Islamabad", "Istanbul");
 
 // g.removeEdge('Islamabad', 'California');
 
-g.removeVertex('Hongkong');
-
+// console.log(JSON.stringify(g.adjacencyList, null, 1));
+g.removeVertex("Hongkong");
+// console.log("--------------------------");
 console.log(JSON.stringify(g.adjacencyList, null, 1));

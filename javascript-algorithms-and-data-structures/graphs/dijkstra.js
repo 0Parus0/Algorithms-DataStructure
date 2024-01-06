@@ -1,34 +1,34 @@
 class NaivePriorityQueue {
   constructor() {
     this.values = [];
-  };
+  }
 
   enqueue(val, priority) {
-    this.values.push({val, priority});
+    this.values.push({ val, priority });
     this.sort();
-  };
+  }
 
   dequeue() {
     return this.values.shift();
-  };
+  }
 
   sort() {
     this.values.sort((a, b) => a.priority - b.priority);
-  };
-};
+  }
+}
 
 class WeightedGraph {
   constructor() {
     this.adjacencyList = {};
   }
-  
+
   addVertex(vertex) {
-    if(!this.adjacencyList[vertex]) this.adjacencyList[vertex] = [];
+    if (!this.adjacencyList[vertex]) this.adjacencyList[vertex] = [];
   }
 
   addEdge(vertex1, vertex2, weight) {
-    this.adjacencyList[vertex1].push({node: vertex2, weight});
-    this.adjacencyList[vertex2].push({node: vertex1, weight});
+    this.adjacencyList[vertex1].push({ node: vertex2, weight });
+    this.adjacencyList[vertex2].push({ node: vertex1, weight });
   }
   dijkstra(start, finish) {
     const nodes = new NaivePriorityQueue();
@@ -38,8 +38,8 @@ class WeightedGraph {
     let smallest;
 
     // build up initial state
-    for(let vertex in this.adjacencyList) {
-      if(vertex === start) {
+    for (let vertex in this.adjacencyList) {
+      if (vertex === start) {
         distances[vertex] = 0;
         nodes.enqueue(vertex, 0);
       } else {
@@ -49,9 +49,9 @@ class WeightedGraph {
       previous[vertex] = null;
     }
     // as long as there is something to visit
-    while(nodes.values.length) {
+    while (nodes.values.length) {
       smallest = nodes.dequeue().val;
-      if(smallest === finish) {
+      if (smallest === finish) {
         // We are done
         // We need to build path
         while (previous[smallest]) {
@@ -60,14 +60,14 @@ class WeightedGraph {
         }
         break;
       }
-      if( smallest || distances[smallest] !== Infinity) {
-        for( let neighbor in this.adjacencyList[smallest]) {
+      if (smallest || distances[smallest] !== Infinity) {
+        for (let neighbor in this.adjacencyList[smallest]) {
           // find neighboring node
-          let nextNode = this.adjacencyList[smallest][neighbor]
+          let nextNode = this.adjacencyList[smallest][neighbor];
           // calculate new distance to neighboring node
           let candidate = distances[smallest] + nextNode.weight;
           let nextNeighbor = nextNode.node;
-          if(candidate < distances[nextNeighbor]){
+          if (candidate < distances[nextNeighbor]) {
             // updating new smallest distance to neighbor;
             distances[nextNeighbor] = candidate;
             // updating previous - How we got to neighbor
@@ -80,21 +80,18 @@ class WeightedGraph {
     }
     return path.concat(smallest).reverse();
   }
-    
 }
 
-
 const graph = new WeightedGraph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-graph.addVertex('F');
-
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addVertex("D");
+graph.addVertex("E");
+graph.addVertex("F");
 
 /**
- *                       A 
+ *                       A
  *                   2/     \4
  *                   C       B
  *                  2|\      |3
@@ -102,18 +99,20 @@ graph.addVertex('F');
  *                    \ \4  /
  *                    1\ | /1
  *                       F
-*/
+ */
 
-graph.addEdge('A', 'B', 4);
-graph.addEdge('A', 'C', 2);
-graph.addEdge('B', 'E', 3);
-graph.addEdge('C', 'D', 2);
-graph.addEdge('C', 'F', 4);
-graph.addEdge('D', 'E', 3);
-graph.addEdge('D', 'F', 1);
-graph.addEdge('E', 'F', 1);
+graph.addEdge("A", "B", 4);
+graph.addEdge("A", "C", 2);
+graph.addEdge("B", "E", 3);
+graph.addEdge("C", "D", 2);
+graph.addEdge("C", "F", 4);
+graph.addEdge("D", "E", 3);
+graph.addEdge("D", "F", 1);
+graph.addEdge("E", "F", 1);
+// console.log(JSON.stringify(graph, null, 2));
+console.log(graph);
 
-console.log(graph.dijkstra('A', 'E'));
+console.log(graph.dijkstra("A", "E"));
 
 // console.log(JSON.stringify(graph.adjacencyList, null, 2));
 // console.log(graph.adjacencyList);

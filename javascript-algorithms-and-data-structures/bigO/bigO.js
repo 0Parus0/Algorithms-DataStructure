@@ -1,45 +1,45 @@
-// function addUpToSlower(n) {
-//   let total = 0;
-//   for(let i = 1; i <= n; i++) {
-//     total += i
-//   }
-//   return total;
-// };
+function addUpToSlower(n) {
+  let total = 0;
+  for(let i = 1; i <= n; i++) {
+    total += i
+  }
+  return total;
+};
 
-// function addUpToFaster(n) {
-//   return n * (n + 1) / 2;
-// }
+function addUpToFaster(n) {
+  return n * (n + 1) / 2;
+}
 
-// function countUpAndDown(n) {
-//   console.log('Going up!');
-//   for(let i = 0; i < n; i++) {
-//     console.log(i);
-//   }
-//   console.log('At the top!\nGoing down...');
-//   for (let j = n; j >= 0; j--) {
-//     console.log(j);
-//   }
-// }
+function countUpAndDown(n) {
+  console.log('Going up!');
+  for(let i = 0; i < n; i++) {
+    console.log(i);
+  }
+  console.log('At the top!\nGoing down...');
+  for (let j = n; j >= 0; j--) {
+    console.log(j);
+  }
+}
 
-// function printAllPairs(n) {
-//   for (let i = 0; i < n; i++) {
-//     for(let j = 0; j < n; j++) {
-//       console.log(i, j);
-//     }
-//   }
-// }
+function printAllPairs(n) {
+  for (let i = 0; i < n; i++) {
+    for(let j = 0; j < n; j++) {
+      console.log(i, j);
+    }
+  }
+}
 
-// function logAtLeast5(n) {
-//   for ( let i = 1; i <= Math.max(5, n); i++) {
-//     console.log(i);
-//   }
-// }
+function logAtLeast5(n) {
+  for ( let i = 1; i <= Math.max(5, n); i++) {
+    console.log(i);
+  }
+}
 
-// function logAtMost5(n) {
-//   for (let i = 1; i < 5; i++) {
-//     console.log(i);
-//   }
-// }
+function logAtMost5(n) {
+  for (let i = 1; i < 5; i++) {
+    console.log(i);
+  }
+}
 
 
 // var t5 = performance.now();

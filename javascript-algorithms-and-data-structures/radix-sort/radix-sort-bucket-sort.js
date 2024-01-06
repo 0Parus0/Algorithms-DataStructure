@@ -45,61 +45,90 @@
  * *************************
  * *** getDigit *** Helper
  * **************************
-*/
+ */
 
- function getDigit(num, i) {
-   return Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
- }
+function getDigit(num, place) {
+  return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
+}
 
-//  console.log(getDigit(7342, 3));
+//  function getDigit(num, i) {
+//    return Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
+//  }
 
+// console.log(getDigit(7342, 0));
 
 /**
  * *************************
  * *** digitCount *** Helper
  * **************************
-*/
+ */
 
 function digitCount(num) {
-  if(num === 0) return 1;
+  if (num === 0) return 1;
   return Math.floor(Math.log10(Math.abs(num))) + 1;
 }
+
+// function digitCount(num) {
+//   if (num === 0) return 1;
+//   return Math.floor(Math.log10(Math.abs(num))) + 1;
+// }
 
 /**
  * *************************
  * *** mostDigits *** Helper
  * **************************
-*/
+ */
 
-function mostDigits(numArray) {
-  let maxDigits = 0;
-  for(let i = 0; i < numArray.length; i++) {
-    maxDigits = Math.max(maxDigits, digitCount(numArray[i]));
+function mostDigits(numArr) {
+  let maxDigit = 0;
+  for (let i = 0; i < numArr.length; i++) {
+    maxDigit = Math.max(maxDigit, digitCount(numArr[i]));
   }
-  return maxDigits;
+  return maxDigit;
 }
 
-// console.log(mostDigits([12, 234, 567, 8765, 98765]));
+// function mostDigits(numArray) {
+//   let maxDigits = 0;
+//   for (let i = 0; i < numArray.length; i++) {
+//     maxDigits = Math.max(maxDigits, digitCount(numArray[i]));
+//   }
+//   return maxDigits;
+// }
 
+// console.log(mostDigits([12, 234, 567, 8765, 98765]));
 
 /**
  * *************************
  * *** radixSort ***
  * **************************
-*/
+ */
 
-function radixSort(numArray) {
-  const maxDigitCount = mostDigits(numArray);
-  for(let k = 0; k < maxDigitCount; k++) {
-    let digitBuckets = Array.from({length: 10}, () => []);
-    for(let i = 0; i < numArray.length; i++) {
-      let digit = getDigit(numArray[i], k);
-      digitBuckets[digit].push(numArray[i]);
+function radixSort(numArr) {
+  let mostDigitCount = mostDigits(numArr);
+  for (let i = 0; i < mostDigitCount; i++) {
+    let digitBuckets = Array.from({ length: 10 }, () => []);
+    // let digitBuckets = Array(10).fill([]); this creates 10 references to a single same array in memory
+
+    for (let j = 0; j < numArr.length; j++) {
+      let digit = getDigit(numArr[j], i);
+      digitBuckets[digit].push(numArr[j]);
     }
-    numArray = [].concat(...digitBuckets) ;
+    numArr = [].concat(...digitBuckets);
   }
-  return numArray;
+  return numArr;
 }
 
+// function radixSort(numArray) {
+//   const maxDigitCount = mostDigits(numArray);
+//   for (let k = 0; k < maxDigitCount; k++) {
+//     let digitBuckets = Array.from({ length: 10 }, () => []);
+//     for (let i = 0; i < numArray.length; i++) {
+//       let digit = getDigit(numArray[i], k);
+//       digitBuckets[digit].push(numArray[i]);
+//     }
+//     numArray = [].concat(...digitBuckets);
+//   }
+//   return numArray;
+// }
 
-console.log(radixSort([23, 245, 5467, 12, 2345, 9852, 3452]));
+console.log(radixSort([23, 245, 5467, 12]));
