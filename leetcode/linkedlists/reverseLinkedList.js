@@ -14,5 +14,6 @@ function reverseSinglyLinkedList(head) {
     current = next;
   }
 
-  return prev;
+  head = prev;
+  return head;
 }

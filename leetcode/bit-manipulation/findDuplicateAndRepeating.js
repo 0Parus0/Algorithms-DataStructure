@@ -31,53 +31,55 @@ How can we prove that at least one duplicate number must exist in nums?
 Can you solve the problem in linear runtime complexity?
 */
 
-function findDuplicateAndMissing(numsArr, n = numsArr.length - 1) {
-  let allXor = 0;
-  for (let i = 0; i <= n; i++) {
-    // xor of range 0 to n inclusive
-    allXor = allXor ^ i;
+function findDuplicateAndMissing(numsArr, n = numsArr.length) {
+  let xor = 0;
+  // xor all the array elements
+  for (let i = 0; i < n; i++) {
+    xor ^= numArr[i];
   }
 
-  for (let num of numsArr) {
-    // xor of range plus numbers of numsArr
-    allXor = allXor ^ num;
+  // xor all the numbers from 1 to array.length
+  for (let i = 1; i <= n; i++) {
+    xor ^= i;
   }
-
-  let rsbm = allXor & -allXor;
-  let x = 0;
-  let y = 0;
+  // this will remove all the duplicates from numsArray and 1 to n
+  let rmsb = xor & -xor;
+  let x = 0,
+    y = 0;
 
   for (let num of numsArr) {
-    if (num & (rsbm > 0)) {
+    if ((num & rmsb) === 0) {
       x = x ^ num;
     } else {
       y = y ^ num;
     }
   }
 
-  for (let i = 0; i <= n; i++) {
-    if (i & (rsbm > 0)) {
+  for (let i = 1; i <= n; i++) {
+    if ((i & rmsb) === 0) {
       x = x ^ i;
     } else {
       y = y ^ i;
     }
   }
-  let missing = 0;
-  let duplicate = 0;
+  let missing, repeating;
 
   for (let num of numsArr) {
     if (num === x) {
-      duplicate = num;
       missing = y;
+      repeating = x;
+      break;
     } else {
-      duplicate = y;
       missing = x;
+      repeating = y;
+      break;
     }
   }
-  console.log({ missing }, { duplicate });
+
+  return { missing, repeating };
 }
-let numArr = [3, 1, 3, 4, 3];
-// console.log(findDuplicateAndMissing(numArr));
+let numArr = [5, 1, 3, 4, 3];
+console.log(findDuplicateAndMissing(numArr));
 
 function findDuplicate(numsArr) {
   // start a fast and slow pointer
@@ -101,4 +103,4 @@ function findDuplicate(numsArr) {
   return slow;
 }
 
-console.log(findDuplicate(numArr));
+// console.log(findDuplicate(numArr));

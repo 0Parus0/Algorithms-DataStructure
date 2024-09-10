@@ -42,13 +42,11 @@ function longestSubstrWithoutRepeat(str) {
     }
 
     charMap[currentChar] = end;
-    console.log(charMap);
     longest = Math.max(longest, end - start + 1);
   }
 
   return longest;
 }
-console.log(longestSubstrWithoutRepeat("pwwkew"));
 
 // function longestSubstrWithoutRepeat(str) {
 //   const len = str.length;
@@ -71,3 +69,5 @@ console.log(longestSubstrWithoutRepeat("pwwkew"));
 //   }
 //   return max;
 // }
+
+console.log(longestSubstrWithoutRepeat("pwwkew"));

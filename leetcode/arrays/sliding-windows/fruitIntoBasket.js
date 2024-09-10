@@ -39,9 +39,8 @@ function totalFruit(fruits) {
   const len = fruits.length;
   const treeMap = {};
   let start = 0,
-    end = 0,
     max = 0;
-  for (; end < len; end++) {
+  for (let end = 0; end < len; end++) {
     let fruit = fruits[end];
     if (!treeMap[fruit]) treeMap[fruit] = 1;
     else treeMap[fruit]++;
@@ -82,6 +81,6 @@ function totalFruit(fruits) {
 //   return res;
 // };
 
-let fruits = [0, 100, 600, 600, 400, 600, 600];
+let fruits = [0, 100, 600, 600, 600, 600, 600];
 
 console.log(totalFruit(fruits));

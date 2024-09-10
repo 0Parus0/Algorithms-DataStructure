@@ -2,10 +2,10 @@
     Index = row-index * number-of-columns + column-index
     Row Major
     if an index of a matrix is given we can find out the row-number by dividing the index with the total number column
-    row-index = index / col 
+    row-index = index / number-of-columns 
     Column Major
     if an index of a matrix is given and number of columns are given we can find out column-number by modulus index with total numbers of column
-    col-index = index % col
+    col-index = index % number-of-columns
 */
 
 function binarySearch(matrix, target) {
