@@ -122,8 +122,34 @@ function threeSum(nums, target) {
   }
   return ans;
 }
+
+function tripleSum(arr) {
+  arr = arr.sort((a, b) => a - b);
+  let n = arr.length;
+  let result = [];
+
+  for (let i = 0; i < n - 2; i++) {
+    if (i > 0 && arr[i] === arr[i - 1]) continue;
+    let left = i + 1;
+    let right = n - 1;
+    while (left < right) {
+      let sum = arr[i] + arr[left] + arr[right];
+      if (sum === target) {
+        result.push([arr[i], arr[left], arr[right]]);
+        while (left < right && arr[left] === arr[left + 1]) left++;
+        while (left < right && arr[right] === arr[right - 1]) right--;
+        left++;
+        right--;
+      } else if (sum < target) {
+        left++;
+      } else right--;
+    }
+  }
+  return result;
+}
 let arr = [-1, 0, 1, 2, -1, -4];
 // let arr = [0, 0, 0];
 target = 0;
 
-console.log(threeSum(arr, target));
+// console.log(threeSum(arr, target));
+console.log(tripleSum(arr, target));

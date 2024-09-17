@@ -74,4 +74,24 @@ function subtractProductAndSum(num) {
   return prod - sum;
 }
 
-console.log(subtractProductAndSum(234));
+// console.log(subtractProductAndSum(234));
+
+function maxWater(heights) {
+  let n = heights.length;
+  let left = 0 , right = n -1;
+  let water = 0;
+
+  while(left < right) {
+    let height = Math.min(heights[left], heights[right]);
+    let width = right - left;
+    let area = height * width;
+    water = Math.max(water, area);
+
+    if(heights[left] <= heights[right]) left++;
+    else right --;
+  }
+
+  return water;
+}
+
+console.log(maxWater(heights));

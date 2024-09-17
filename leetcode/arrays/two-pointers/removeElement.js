@@ -47,6 +47,30 @@
  * @param {number} val
  * @return {number}
  */
-var removeElement = function(nums, val) {
-    
+var removeElementBF = function(nums, val) {
+    let n = nums.length;
+    for(let i = 0; i < n; i++) {
+        if(nums[i] === val) {
+            for(let j = i; j < n -1; j++ ) {
+                nums[j] = nums[j + 1];
+            }
+            i--;
+            n--;
+        }
+    }
+    return n;
 };
+
+function removeEl(nums, val){
+    let n = nums.length;
+    let insertPos = 0;
+    for(let i = 0; i < n; i++) {
+        if(nums[i] !== val) {
+            nums[insertPos] = nums[i];
+            insertPos++;
+        }
+    }
+    return insertPos;
+}
+// console.log(removeElementBF([1,3,3,2], 0));
+console.log(removeEl([1,3,3,2], 3));

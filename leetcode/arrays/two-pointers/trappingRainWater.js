@@ -47,36 +47,56 @@ function trappedRainWater(heights) {
     }
   }
   return totalWater;
-
-  /* Brute Force */
-  // let totalWater = 0;
-  // for (let p = 0; p < heights.length; p++) {
-  //   let maxLeft = 0,
-  //     maxRight = 0;
-  //   let right = p,
-  //     left = p;
-  //   while (left >= 0) {
-  //     maxLeft = Math.max(maxLeft, heights[left]);
-  //     left--;
-  //   }
-  //   while (right < heights.length) {
-  //     maxRight = Math.max(maxRight, heights[right]);
-  //     right++;
-  //   }
-
-  //   let currentWater = Math.min(maxLeft, maxRight) - heights[p];
-  //   if (currentWater >= 0) totalWater += currentWater;
-  // }
-
-  // return totalWater;
 }
 
-// let heights = [5, 1, 0, 2, 0, 3, 0]; // 9
-// heights = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]; // 6
-heights = [4, 2, 0, 3, 2, 5]; //                                                        9
-console.log(trappedRainWater(heights));
+/* Brute Force */
+function trap(heights) {
+  let totalWater = 0;
+  for (let i = 0; i < heights.length - 1; i++) {
+    let leftMax = Math.max(...heights.slice(0, i));
+    let rightMax = Math.max(...heights.slice(i + 1));
+    // console.log(leftMax, rightMax)
+    let water = Math.min(leftMax, rightMax) - heights[i];
+    if (water > 0) totalWater += water;
+  }
+  return totalWater;
+}
 
-/*function trapRainWaterWithLeaks(heights) {
+function trapOptimized(heights) {
+  let n = heights.length;
+  let left = 0,
+    right = n - 1;
+  let leftMax = heights[0];
+  let rightMax = heights[n - 1];
+  let totalWater = 0;
+
+  while (left < right) {
+    if (leftMax <= rightMax) {
+      if (leftMax <= heights[left]) {
+        leftMax = heights[left];
+      } else {
+        totalWater += leftMax - heights[left];
+      }
+      left++;
+    } else {
+      if (rightMax <= heights[right]) {
+        rightMax = heights[right];
+      } else {
+        totalWater += rightMax - heights[right];
+      }
+      right--;
+    }
+  }
+
+  return totalWater;
+}
+let heights = [5, 1, 0, 2, 0, 3, 0]; // 9
+// heights = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]; // 6
+// heights = [4, 2, 0, 3, 2, 5]; //                                                        9
+// console.log(trapOptimized(heights));
+console.log(trapOptimized([2, 1, 2]));
+
+function trapRainWaterWithLeaks(heights) {
     let left = 0, right = heights.length - 1;
     let left_max = 0, right_max = 0;
     let trappedWater = 0;
@@ -116,4 +136,162 @@ console.log(trappedRainWater(heights));
     }
     return trappedWater;
 }
-*/
+
+function trapRainWaterWithLeaks(heights) {
+    let left = 0, right = heights.length - 1;
+    let leftMax = 0, rightMax = 0;
+    let trappedWater = 0;
+
+    while (left < right) {
+        if (heights[left] < heights[right]) {
+            if (heights[left] === 0) {
+                // Leak encountered, reset leftMax
+                leftMax = 0;
+            } else if (heights[left] > leftMax) {
+                leftMax = heights[left];
+            } else {
+                trappedWater += leftMax - heights[left];
+            }
+            left++;
+        } else {
+            if (heights[right] === 0) {
+                // Leak encountered, reset rightMax
+                rightMax = 0;
+            } else if (heights[right] > rightMax) {
+                rightMax = heights[right];
+            } else {
+                trappedWater += rightMax - heights[right];
+            }
+            right--;
+        }
+    }
+
+    return trappedWater;
+}
+function trapRainWaterWithLeaks(heights) {
+    let left = 0, right = heights.length - 1;
+    let leftMax = 0, rightMax = 0;
+    let trappedWater = 0;
+
+    while (left < right) {
+        if (heights[left] < heights[right]) {
+            if (heights[left] === 0) {
+                // Leak encountered, reset leftMax
+                leftMax = 0;
+            } else if (heights[left] > leftMax) {
+                leftMax = heights[left];
+            } else {
+                trappedWater += leftMax - heights[left];
+            }
+            left++;
+        } else {
+            if (heights[right] === 0) {
+                // Leak encountered, reset rightMax
+                rightMax = 0;
+            } else if (heights[right] > rightMax) {
+                rightMax = heights[right];
+            } else {
+                trappedWater += rightMax - heights[right];
+            }
+            right--;
+        }
+    }
+
+    return trappedWater;
+}
+function trapRainWaterWithLeaks(heights) {
+    let left = 0, right = heights.length - 1;
+    let leftMax = 0, rightMax = 0;
+    let trappedWater = 0;
+
+    while (left < right) {
+        if (heights[left] < heights[right]) {
+            if (heights[left] === 0) {
+                // Leak encountered, reset leftMax
+                leftMax = 0;
+            } else if (heights[left] > leftMax) {
+                leftMax = heights[left];
+            } else {
+                trappedWater += leftMax - heights[left];
+            }
+            left++;
+        } else {
+            if (heights[right] === 0) {
+                // Leak encountered, reset rightMax
+                rightMax = 0;
+            } else if (heights[right] > rightMax) {
+                rightMax = heights[right];
+            } else {
+                trappedWater += rightMax - heights[right];
+            }
+            right--;
+        }
+    }
+
+    return trappedWater;
+}
+function trapRainWaterWithLeaks(heights) {
+    let left = 0, right = heights.length - 1;
+    let leftMax = 0, rightMax = 0;
+    let trappedWater = 0;
+
+    while (left < right) {
+        if (heights[left] < heights[right]) {
+            if (heights[left] === 0) {
+                // Leak encountered, reset leftMax
+                leftMax = 0;
+            } else if (heights[left] > leftMax) {
+                leftMax = heights[left];
+            } else {
+                trappedWater += leftMax - heights[left];
+            }
+            left++;
+        } else {
+            if (heights[right] === 0) {
+                // Leak encountered, reset rightMax
+                rightMax = 0;
+            } else if (heights[right] > rightMax) {
+                rightMax = heights[right];
+            } else {
+                trappedWater += rightMax - heights[right];
+            }
+            right--;
+        }
+    }
+
+    return trappedWater;
+}
+
+function trapRainWaterWithLeaksCGBT(heights) {
+    let left = 0, right = heights.length - 1;
+    let leftMax = 0, rightMax = 0;
+    let trappedWater = 0;
+
+    while (left <= right) {
+        if (heights[left] <= heights[right]) {
+            if (heights[left] === 0) {
+                // Leak encountered, reset leftMax
+                leftMax = 0;
+            } else if (heights[left] > leftMax) {
+                leftMax = heights[left];
+            } else {
+                trappedWater += leftMax - heights[left];
+            }
+            left++;
+        } else {
+            if (heights[right] === 0) {
+                // Leak encountered, reset rightMax
+                rightMax = 0;
+            } else if (heights[right] > rightMax) {
+                rightMax = heights[right];
+            } else {
+                trappedWater += rightMax - heights[right];
+            }
+            right--;
+        }
+    }
+
+    return trappedWater;
+}
+
+console.log(trapRainWaterWithLeaks([3, 0,2,1,4, 3, 0, 5]));
