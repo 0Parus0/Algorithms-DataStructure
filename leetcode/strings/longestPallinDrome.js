@@ -22,41 +22,41 @@ Constraints:
 1 <= s.length <= 2000
 s consists of lowercase and/or uppercase English letters only.
 */
-function longest(str) {
+
+function longestPalindrome(str) {
   let n = str.length;
-  let count = 0;
-  let odd = 0;
-  let alphaLower = Array.from({ length: 26 }, () => 0);
-  let alphaUpper = Array.from({ length: 26 }, () => 0);
+  let longest = 0;
+  let odd = false;
+  let lower = new Array(26).fill(0);
+  let upper = new Array(26).fill(0);
+
   for (let i = 0; i < n; i++) {
-    if (checkLowerCase(str[i])) {
-      let char = str[i].charCodeAt() - "a".charCodeAt();
-      alphaLower[char]++;
+    let char = str[i].charCodeAt();
+    if (char < 97) {
+      let idx = char - 65;
+      upper[idx]++;
     } else {
-      let char = str[i].charCodeAt() - "A".charCodeAt();
-      alphaUpper[char]++;
+      let idx = char - 97;
+      lower[idx]++;
     }
   }
+
   for (let i = 0; i < 26; i++) {
-    if (alphaLower[i] % 2 === 0) {
-      count += alphaLower[i];
+    if (lower[i] % 2 === 0) {
+      longest += lower[i];
     } else {
-      count += alphaLower[i] - 1;
-      odd = 1;
+      odd = true;
+      longest + lower[i] - 1;
     }
-    // upper case letters
-    if (alphaUpper[i] % 2 === 0) {
-      count += alphaUpper[i];
+    if (upper[i] % 2 === 0) {
+      longest += upper[i];
     } else {
-      count += alphaUpper[i] - 1;
-      odd = 1;
+      odd = true;
+      longest += upper[i] - 1;
     }
   }
-  return count + odd;
-  //   console.log(alphaLower, alphaUpper);
-}
-function checkLowerCase(char) {
-  return char.charCodeAt() >= 97;
+  if (odd) longest++;
+  return longest;
 }
 
-console.log(longest("aAAbbA"));
+console.log(longestPalindrome("aNNbccccdd"));

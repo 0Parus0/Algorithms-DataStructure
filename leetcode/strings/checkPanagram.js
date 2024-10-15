@@ -21,22 +21,44 @@ Constraints:
 1 <= sentence.length <= 1000
 sentence consists of lowercase English letters.
 */
-function checkPanagram(str) {
+function checkPangram(str) {
   let n = str.length;
-  let alpha = Array.from({ length: 26 }, (el) => (el = 0));
+  let alpha = new Array(26).fill(0);
+  let count = 0;
   for (let i = 0; i < n; i++) {
     let char = str[i].charCodeAt() - "a".charCodeAt();
+    if(alpha[char] === 0){
+
+
     alpha[char] = 1;
+    count++;
+    }
   }
-  //   console.log(alpha);
-  for (let i = 0; i < alpha.length; i++) {
-    if (alpha[i] === 0) return false;
+  return count === 26;
+  
+  // for (let i = 0; i < alpha.length; i++) {
+  //   if (alpha[i] === 0) return false;
+  // }
+  // return true;
+}
+
+function pangram(str){
+  let n = str.length;
+  let map = new Array(26).fill(false);
+
+  for(let i = 0; i < n; i++){
+    let idx = str[i].charCodeAt() - 97;
+    map[idx] = true;
+  }
+
+  for(let i = 0; i < 26; i++){
+    if(!map[i]) return false;
   }
   return true;
 }
 let str = "thequickbrownfoxjumpsoverthelazydog";
 
-console.log(checkPanagram(str));
+console.log(pangram(str));
 
 function sortAString(str) {
   let n = str.length;

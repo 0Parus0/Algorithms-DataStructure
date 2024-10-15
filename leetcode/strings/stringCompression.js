@@ -40,85 +40,41 @@ Constraints:
 1 <= chars.length <= 2000
 chars[i] is a lowercase English letter, uppercase English letter, digit, or symbol.
 */
+
 function compress(chars) {
   let n = chars.length;
-  let s = "";
-
-  s += chars[0];
-
-  let count = 1;
-  for (let i = 1; i < n; i++) {
+  let index = 0; 
+  let i = 0;
+  
+  while(i < n) {
     let currChar = chars[i];
-    let prevChar = chars[i - 1];
-    if (currChar === prevChar) {
+    let count = 0;
+    // Find count of duplicates
+    while(i < n && chars[i] === currChar){
       count++;
-    } else {
-      if (count > 1) {
-        s += count;
-        count = 1;
+      i++;
+
+    }
+    // Now assign the currChar and its count
+    chars[index] = currChar;
+    index++;
+    if(count > 1) {
+      let countStr = count.toString();
+      console.log({count, countStr})
+      for(let char of countStr){
+        chars[index] = char;
+        index++;
       }
-      s += currChar;
     }
   }
-  if (count > 1) {
-    s += count;
-    count = 1;
-  }
-  return s.length;
-
-  /* Mutating same Array */
-  //   let i = 0,
-  //     ansIndex = 0,
-  //     n = chars.length;
-  //   while (i < n) {
-  //     let j = i + 1;
-  //     // counting the chars that are more than once
-  //     while (j < n && chars[i] === chars[j]) {
-  //       j++;
-  //     }
-
-  //     // chars array in place mutation
-
-  //     chars[ansIndex++] = chars[i];
-
-  //     // saving count in chars array
-
-  //     let count = j - i;
-  //     if (count > 1) {
-  //       let countStr = count.toString();
-
-  //       for (let char of countStr) {
-  //         chars[ansIndex++] = char;
-  //       }
-  //     }
-
-  //     i = j;
-  //   }
-  //   // returning the number of elements in chars array
-  //   return ansIndex;
+  return index;
 }
 
+// Example usage:
+const s = ["a","a","b","b","c","c","c"];
+console.log(compress(s));  // Output: "aba2sas2"
+
+
 console.log(
-  compress([
-    "a",
-    "b",
-    "b",
-    "b",
-    "b",
-    "b",
-    "b",
-    "b",
-    "b",
-    "b",
-    "b",
-    "b",
-    "b",
-    "c",
-    "c",
-    "c",
-    "c",
-    "d",
-    "d",
-    "@",
-  ])
+  compress(["a","b","b","b","b","b","b","b","b","b","b","b","b"])
 );

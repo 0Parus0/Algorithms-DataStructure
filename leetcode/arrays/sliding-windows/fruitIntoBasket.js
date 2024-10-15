@@ -55,32 +55,32 @@ function totalFruit(fruits) {
   return max;
 }
 
-// const totalFruit = function (fruits) {
-//   let n = fruits.length;
-//   let start = 0,
-//     end = 0;
-//   const map = new Map();
-//   let res = 0;
-//   for (; end < n; end++) {
-//     const e = fruits[end];
-//     if (!map.has(e)) map.set(e, 1);
-//     else map.set(e, map.get(e) + 1);
+function fruitsIntoBaskets(fruits, k) {
+  let n = fruits.length;
+  let start = 0, maxLen = 0, curr = 0;
+  let map = new Map();
+  
+  for(let end = 0; end < n; end++) {
+    // Expand the window
+    map.set(fruits[end], (map.get(fruits[end]) || 0) + 1);
 
-//     while (map.size > 2 && start < n) {
-//       const tmp = fruits[start++];
-//       console.log({ start }, { tmp });
-//       console.log("-----------");
-//       map.set(tmp, map.get(tmp) - 1);
-//       if (map.get(tmp) === 0) {
-//         map.delete(tmp);
-//       }
-//     }
-//     res = Math.max(res, end - start + 1);
-//   }
+    // Shrink the window
+    while(map.size > k) {
+      map.set(fruits[start], map.get(fruits[start]) -1);
+      if(map.get(fruits[start]) === 0) map.delete(fruits[start]);
 
-//   return res;
-// };
+      start++;
+    }
 
-let fruits = [0, 100, 600, 600, 600, 600, 600];
+    curr = end - start + 1;
+    maxLen = Math.max(maxLen, curr);
 
-console.log(totalFruit(fruits));
+
+
+  }
+  return maxLen;
+}
+// let fruits = [0, 100, 600, 600, 600, 600, 600];
+let fruits = [1,2,1,2,3,1,2];
+
+console.log(fruitsIntoBaskets(fruits, 2));

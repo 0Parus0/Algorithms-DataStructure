@@ -81,7 +81,7 @@ str consists only of letters of the English alphabet in uppercase and lowercase.
 // console.log(sortVowels("lyMPH"));
 // console.log(sortVowels("aeipouABC"));
 
-function sortVowels(str) {
+function sortVowelsOld(str) {
   /* To store lowercase letters count */
   let lowAlpha = Array.from({ length: 26 }, () => 0);
   /* To store uppercase letters count */
@@ -143,50 +143,102 @@ function sortVowels(str) {
   return vowels.length ? newResult : result;
 }
 
-console.log(sortVowels("LQRamBOHfq"));
 
-// function sortVowels(str) {
-//   let hash = new Map([
-//     ["A", 1],
-//     ["E", 1],
-//     ["I", 1],
-//     ["O", 1],
-//     ["U", 1],
-//     ["a", 1],
-//     ["e", 1],
-//     ["i", 1],
-//     ["o", 1],
-//     ["u", 1],
-//   ]);
-//   //   let map = {
-//   //     A: 1,
-//   //     E: 1,
-//   //     I: 1,
-//   //     O: 1,
-//   //     U: 1,
-//   //     a: 1,
-//   //     e: 1,
-//   //     i: 1,
-//   //     o: 1,
-//   //     u: 1,
-//   //   };
-//   positions = [];
-//   vowelArr = [];
-//   for (let i = 0; i < str.length; i++) {
-//     // if (map[str[i]]) {
-//     if (hash.has(str[i])) {
-//       positions.push(i);
-//       vowelArr.push(str[i]);
-//       console.log({ positions }, { vowelArr });
-//     }
-//   }
-//   vowelArr.sort();
-//   let res = str.split("");
-//   for (let i = 0; i < positions.length; i++) {
-//     res[positions[i]] = vowelArr[i];
-//   }
-//   res = res.join("");
-//   return res;
-// }
+function sortVowels1(str){
+  let n = str.length;
+  let upperCount = new Array(26).fill(0);
+  let lowerCount = new Array(26).fill(0);
 
-// console.log(sortVowels("LQRamBOHfq"));
+  let lowerVowels = 'aeiou';
+  let upperVowels = 'AEIOU';
+
+  let result = [];
+  for(let i = 0; i < n; i++){
+    if(lowerVowels.includes(str[i] )){
+      let index = str[i].charCodeAt() - 97;
+      lowerCount[index] += 1;
+      result.push('#');
+    }
+    else if(upperVowels.includes(str[i])){
+      let index = str[i].charCodeAt() - 65;
+      upperCount[index] += 1;
+
+      result.push('#');
+    } else result.push(str[i]);
+  }
+
+  let vowels = [];
+
+  for(let i = 0; i < 26; i++){
+    let charCode = 'A'.charCodeAt() + i;
+    let  char = String.fromCharCode(charCode);
+    while(upperCount[i] > 0){
+      vowels.push(char);
+      upperCount[i] --;
+    }
+  }
+
+  for(let i = 0; i < 26; i++){
+    let charCode = 'a'.charCodeAt() + i;
+    let char = String.fromCharCode(charCode);
+    while(lowerCount[i] > 0) {
+      vowels.push(char);
+      lowerCount[i]--;
+    }
+  }
+
+  let first = 0, second = 0;
+  while(first < result.length || second < vowels.length){
+    if(result[first] === '#'){
+      result[first] = vowels[second];
+      second++;
+    } 
+    first++;
+  }
+
+  return result.join('');
+
+}
+
+function sortVowels(str) {
+  let vowels = [];
+  let vowelSet = new Set('aeiouAEIOU');
+
+  // Collect vowels from the string
+  for (let char of str) {
+    if (vowelSet.has(char)) {
+      vowels.push(char);
+    }
+  }
+
+  // Sort vowels while maintaining the original case
+  vowels.sort();
+
+  // Rebuild the string, replacing vowels in their original positions
+  let result = [];
+  let vowelIndex = 0;
+  
+  for (let char of str) {
+    if (vowelSet.has(char)) {
+      result.push(vowels[vowelIndex]);
+      vowelIndex++;
+    } else {
+      result.push(char);
+    }
+  }
+
+  return result.join('');
+}
+
+console.log(sortVowels("LQRamBOHfq")); // Expected output: "LQROmBaHfq"
+console.log(sortVowels("lEetcOde"));    // Expected output: "lEOtcede"
+
+
+
+// console.log(sortVowels1("LQRamBOHfq")); // Expected output: "LQROmBaHfq"
+
+
+// console.log(sortVowelsOld("LQRamBOHfq")); // Expected output: "LQRamBOHfq"
+
+
+// console.log(sortVowels1("LQRamBOHfq"));

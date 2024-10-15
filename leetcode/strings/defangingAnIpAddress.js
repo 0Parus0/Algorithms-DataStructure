@@ -36,4 +36,14 @@ function defang(ipAddress) {
   return result;
 }
 
-console.log(defang("1.1.1.1"));
+function defanged(ip){
+  let n = ip.length;
+  let result = '';
+  for(let i = 0; i < n; i++){
+    if(ip[i] === '.') result += '[.]';
+    else result += ip[i];
+  }
+  return result
+}
+
+console.log(defanged("255.100.50.0"));

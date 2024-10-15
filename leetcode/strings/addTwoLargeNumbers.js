@@ -49,12 +49,12 @@ function add(num1, num2) {
     index1--;
   }
   if (carry > 0) sum = carry + sum;
-  //   console.log({ sum }, { index1 }, { index2 }, { carry });
+    console.log({ sum }, { index1 }, { index2 }, { carry });
   return sum;
 }
 
-let num2 = "100000000000000000000000000";
-let num1 = "000000000000000000000000001";
+let num2 = "99999999";
+let num1 = "888888";
 
 console.log(findSum(num1, num2));
 

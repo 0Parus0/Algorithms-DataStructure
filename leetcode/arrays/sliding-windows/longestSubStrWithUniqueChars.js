@@ -48,6 +48,8 @@ function longestSubstrWithoutRepeat(str) {
 
   return longest;
 }
+
+
 console.log(longestSubstrWithoutRepeat("pwwkew"));
 
 // function longestSubstrWithoutRepeat(str) {

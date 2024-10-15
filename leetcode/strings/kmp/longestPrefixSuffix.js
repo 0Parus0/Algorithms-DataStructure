@@ -53,4 +53,27 @@ function lps(str) {
   return lpsArr[n - 1];
 }
 
-console.log(lps("abcaabc"));
+function lps1(str) {
+  let n = str.length;
+  let i = 1,
+    len = 0;
+  let lpsTab = new Array(n).fill(0);
+
+  while (i < n) {
+    if (str[i] === str[len]) {
+      len++;
+      lpsTab[i] = len;
+      i++;
+    } else {
+      if (len  === 0) {
+        lps[i] = 0;
+        i++;
+      } else {
+        len = lpsTab[len - 1];
+      }
+    }
+  }
+  return lpsTab;
+}
+
+console.log(lps1("abcabdabcabdabdab"));

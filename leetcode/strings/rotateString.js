@@ -52,42 +52,66 @@ Initialize two empty strings which keep the clockwise and anticlockwise strings 
 After rotating the str1 compare both clockwise and anticlockwise strings with str2.
 If any of them matches the str2 return true, otherwise false.
 */
-function rotated(str1, str2) {
-  let clockwise = true;
-  let antiClockwise = true;
-  let n = str1.length;
-  for (let i = 0; i < n; i++) {
-    if (str1[i] !== str2[(i + 2) % n]) clockWise = false;
-    break;
-  }
-  for (let i = 0; i < n; i++) {
-    if (str2[(i + 2) % n] !== str1[i]) antiClockwise = false;
-    break;
-  }
-  return clockwise || antiClockwise;
-}
+// function rotated(str1, str2) {
+//   let clockwise = true;
+//   let antiClockwise = true;
+//   let n = str1.length;
+//   for (let i = 0; i < n; i++) {
+//     if (str1[i] !== str2[(i + 2) % n]) clockwise = false;
+//     break;
+//   }
+//   for (let i = 0; i < n; i++) {
+//     if (str2[(i + 2) % n] !== str1[i]) antiClockwise = false;
+//     break;
+//   }
+//   return clockwise || antiClockwise;
+// }
 
-function clockWise(str, num) {
-  let n = str.length;
-  let result = [];
-  for (let i = 0; i < n; i++) {
-    result[(i + num) % n] = str[i];
-  }
-  return result.join("");
+// function clockWise(str, num) {
+//   let n = str.length;
+//   let result = [];
+//   for (let i = 0; i < n; i++) {
+//     result[(i + num) % n] = str[i];
+//   }
+//   return result.join("");
+// }
+
+// function antiClockWise(str, num) {
+//   let n = str.length;
+//   let result = [];
+//   for (let i = 0; i < n; i++) {
+//     // console.log(Math.abs(i - num), i);
+//     result[i] = str[(num + i) % n];
+//   }
+//   return result.join("");
+
+
+// }
+
+function rotated(str1, str2){
+  console.log(str1, str2)
+  return clockWise(str1, 2) === str2 || antiClockWise(str1, 2) === str2;
 }
 
 function antiClockWise(str, num) {
   let n = str.length;
-  let result = [];
-  for (let i = 0; i < n; i++) {
-    // console.log(Math.abs(i - num), i);
-    result[i] = str[(num + i) % n];
-  }
-  return result.join("");
+  let left = str.slice(0, num);
+  let right = str.slice(num, n);
+
+  return right + left;
 }
 
-console.log(antiClockWise("amazon", 2), clockWise("amazon", 2));
-console.log(rotated("amazon", "onamaz"));
+function clockWise(str, num) {
+  let n = str.length;
+  let left = str.slice(0, n - num);
+  let right = str.slice(n - num);
+  return right + left;
+}
+
+// console.log(antiClockWise('amazon', 2));
+// console.log(clockWise('amazon', 2));
+// console.log(antiClockWise("amazon", 2), clockWise("amazon", 2));
+// console.log(rotated("amazon", "onamaz"));
 
 /*
 Given two strings s and goal, return true if and only if s can become goal after some number of shifts on s.
@@ -133,3 +157,44 @@ Constraints:
 1 <= s.length, goal.length <= 100
 s and goal consist of lowercase English letters.
 */
+
+function makeEqual(s, goal){
+  let n = s.length;
+  let result = rotateOnePlace(s);
+  console.log(result)
+  if (s.length !== goal.length) return false;
+  for(let i = 0; i < n; i++){
+    if(goal === result) return true;
+    else result = rotateOnePlace(result);
+
+  }
+  return false;
+}
+
+function rotateOnePlace(str){
+  let n = str.length;
+  let result = '';
+  let last = str[n -1];
+  result += last;
+  for(let i = 0; i < n -1; i++){
+    result += str[i];
+  }
+   
+return result;
+}
+
+console.log(makeEqual( "abcde", "cdeab"))
+
+function makeEqual(s, goal) {
+  // First, check if the strings are of different lengths
+  if (s.length !== goal.length) return false;
+
+  // Concatenate the string with itself
+  let doubled = s + s;
+
+  // Check if the goal string is a substring of the doubled string
+  return doubled.includes(goal);
+}
+
+console.log(makeEqual("abcde", "cdeab")); // true
+console.log(makeEqual("abcde", "abced")); // false

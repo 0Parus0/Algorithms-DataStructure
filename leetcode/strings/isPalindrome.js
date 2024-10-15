@@ -31,7 +31,7 @@ s consists only of printable ASCII characters.
 */
 function validPalindrome(str) {
   if (str.length <= 1) return true;
-  str = str.replace(/[^\w]/g, "").toLowerCase();
+  str = str.replace(/[^a-z,A-Z,0-9]/g, "").toLowerCase();
   //   console.log(str);
 
   /* Approach One */
@@ -78,6 +78,21 @@ function validPalindrome(str) {
   //   console.log(strReversed);
   return true;
 }
+
+function valid(str) {
+  let validStr = str.replace(/[^a-z,A-Z,0-9]/g, "").toLowerCase();
+  console.log(validStr)
+  // let reversedStr = validStr.split("").reverse().join('');
+  // return validStr === reversedStr;
+
+  let left = 0, right = validStr.length - 1;
+  while(left < right){
+    if(validStr[left] !== validStr[right]) return false;
+    left ++;
+    right --;
+  }
+  return true;
+}
 // let str = "A man, a plan, a canal: Panama";
-let str = "abcba";
-console.log(validPalindrome(str));
+let str = "ab-ba";
+console.log(valid(str));

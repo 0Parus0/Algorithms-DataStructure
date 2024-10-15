@@ -36,16 +36,16 @@ function sortSentence(str) {
   let sentence = "";
   for (let i = 0; i < n; i++) {
     if (str[i] === " ") {
-      let position = word[word.length - 1];
+      let index = word[word.length - 1];
       word = word.slice(0, word.length - 1);
-      arr[position] = word;
+      arr[index] = word;
       word = "";
     } else {
       word += str[i];
     }
   }
-  let position = word[word.length - 1];
-  arr[position] = word.slice(0, word.length - 1);
+  let index = word[word.length - 1];
+  arr[index] = word.slice(0, word.length - 1);
   for (let i = 0; i < 10; i++) {
     if (arr[i]) sentence = sentence + " " + arr[i];
   }
@@ -53,7 +53,32 @@ function sortSentence(str) {
 }
 // let ans = "123";
 // ans = 1 + ans;
+
+function sortSentence1(str) {
+  let result = new Array(10).fill(false);
+  let words = str.split(" ");
+  let resultStr = "";
+
+  for (let i = 0; i < words.length; i++) {
+    let word = words[i];
+    let index = parseInt(word[word.length - 1]);
+
+    result[index] = word.slice(0, word.length - 1);
+
+  }
+
+  for (let i = 0; i < result.length; i++) {
+    if (result[i]) {
+      resultStr += result[i] + " ";
+    }
+  }
+
+  resultStr = resultStr.slice(0, resultStr.length - 1);;
+  
+
+  return resultStr;
+}
+
 let str = "Myself2 Me1 I4 and3";
-console.log(sortSentence(str));
-// console.log(3 + "12");
-// console.log(typeof [2, 3, 5][2]);
+console.log(sortSentence1( "is2 sentence4 This1 a3"));
+

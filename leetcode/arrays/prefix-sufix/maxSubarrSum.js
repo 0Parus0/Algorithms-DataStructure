@@ -55,6 +55,23 @@ function maxSumSubArr(arr) {
   //   }
   return maxSum;
 }
+
+/* For all negative numbers */
+
+function maxSum(arr) {
+  let n = arr.length;
+  let maxSum = arr[0];
+  let prefixSum = arr[0];
+  for (let i = 1; i < n; i++){
+    // Decide whether to add the current element to the existing subarray or start a new subarray
+    prefixSum = Math.max(arr[i], prefixSum + arr[i]);
+    // Update the maximum subarray sum found so far
+    maxSum = Math.max(prefixSum, maxSum);
+  }
+  return maxSum;
+}
+
 // let arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-let arr = [5, 4, -10, 8, 7];
-console.log(maxSumSubArr(arr));
+let arr = [-5, -4, -10, -8, -7];
+
+console.log(maxSum(arr));
