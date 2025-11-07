@@ -33,110 +33,76 @@ Could you devise a constant space solution?
 */
 
 /* Optimal */
+/**
+ * Understand Problem:
+ *  - If any cell is 0, set its row and column to 0.
+ *  - Must do this in-place with constant extra space.
+ *
+ * Plan:
+ *  1. Check if first row or first column contain any 0.
+ *  2. Use first row/column as markers for other rows/columns.
+ *  3. Update matrix based on markers.
+ *  4. Finally, handle first row and first column separately.
+ *
+ * Input: matrix (2D array)
+ * Output: matrix modified in place
+ * Time: O(m*n)
+ * Space: O(1)
+ */
 
-function setMatrixZero(matrix) {
-  let nRows = matrix.length,
-    nCols = matrix[0].length,
-    col0 = 1;
-  for (let row = 0; row < nRows; row++) {
-    for (let col = 0; col < nCols; col++) {
-      if (matrix[row][col] === 0) {
-        // mark the i-th row
-        matrix[row][0] = 0;
-        // mark the j-th col
-        if (col !== 0) {
-          matrix[0][col] = 0;
-        } else col0 = 0;
+function setZeroes(matrix) {
+  const m = matrix.length;
+  const n = matrix[0].length;
+
+  let firstRowZero = false;
+  let firstColZero = false;
+
+  // Step 1: Check first row
+  for (let j = 0; j < n; j++) {
+    if (matrix[0][j] === 0) {
+      firstRowZero = true;
+      break;
+    }
+  }
+
+  // Step 1: Check first column
+  for (let i = 0; i < m; i++) {
+    if (matrix[i][0] === 0) {
+      firstColZero = true;
+      break;
+    }
+  }
+
+  // Step 2: Mark rows and columns using first row and column
+  for (let i = 1; i < m; i++) {
+    for (let j = 1; j < n; j++) {
+      if (matrix[i][j] === 0) {
+        matrix[i][0] = 0; // mark row
+        matrix[0][j] = 0; // mark column
       }
     }
   }
 
-  for (let row = 1; row < nRows; row++) {
-    for (let col = 1; col < nCols; col++) {
-      // check for col & row
-      if (matrix[0][col] === 0 || matrix[row][0] === 0) {
-        matrix[row][col] = 0;
+  // Step 3: Use markers to set zeros
+  for (let i = 1; i < m; i++) {
+    for (let j = 1; j < n; j++) {
+      if (matrix[i][0] === 0 || matrix[0][j] === 0) {
+        matrix[i][j] = 0;
       }
     }
   }
-  if (matrix[0][0] === 0) {
-    for (let col = 0; col < nCols; col++) {
-      matrix[0][col] = 0;
+
+  // Step 4: Handle first row
+  if (firstRowZero) {
+    for (let j = 0; j < n; j++) {
+      matrix[0][j] = 0;
     }
   }
-  if (col0 === 0) {
-    for (let row = 0; row < nRows; row++) {
-      matrix[row][0] = 0;
+
+  // Step 5: Handle first column
+  if (firstColZero) {
+    for (let i = 0; i < m; i++) {
+      matrix[i][0] = 0;
     }
   }
-  return matrix;
 }
-
-/* Using Extra Space */
-
-// function setMatrixZeroExArrs(matrix) {
-//   let nRows = matrix.length,
-//     nCols = matrix[0].length,
-//     rowArr = Array.from({ length: nRows }, (el) => (el = true)),
-//     colArr = Array.from({ length: nCols }, (el) => (el = true));
-//   for (let row = 0; row < nRows; row++) {
-//     for (let col = 0; col < nCols; col++) {
-//       if (matrix[row][col] === 0) {
-//         rowArr[row] = false;
-//         colArr[col] = false;
-//       }
-//     }
-//   }
-//   for (let row = 0; row < nRows; row++) {
-//     for (let col = 0; col < nCols; col++) {
-//       if (!rowArr[row] || !colArr[col]) {
-//         matrix[row][col] = 0;
-//       }
-//     }
-//   }
-//   return matrix;
-// }
-
-/* Brute Force */
-
-// function setMatrixZeroBF(matrix) {
-//   let nRows = matrix.length,
-//     nCols = matrix[0].length;
-//   for (let row = 0; row < nRows; row++) {
-//     for (let col = 0; col < nCols; col++) {
-//       if (matrix[row][col] === 0) {
-//         markRow(row, nCols, matrix);
-//         markCol(col, nRows, matrix);
-//       }
-//     }
-//   }
-
-//   for (let row = 0; row < nRows; row++) {
-//     for (let col = 0; col < nCols; col++) {
-//       if (matrix[row][col] === -Infinity) {
-//         matrix[row][col] = 0;
-//       }
-//     }
-//   }
-//   return matrix;
-// }
-
-// function markCol(col, nRows, matrix) {
-//   for (let row = 0; row < nRows; row++) {
-//     if (matrix[row][col] !== 0) matrix[row][col] = -Infinity;
-//   }
-//   return matrix;
-// }
-
-// function markRow(row, nCols, matrix) {
-//   for (let col = 0; col < nCols; col++) {
-//     if (matrix[row][col] !== 0) matrix[row][col] = -Infinity;
-//   }
-//   return matrix;
-// }
-let matrix = [
-  [9, 1, 2, 0],
-  [0, 4, 5, 2],
-  [1, 3, 1, 5],
-];
-console.log(setMatrixZero(matrix));

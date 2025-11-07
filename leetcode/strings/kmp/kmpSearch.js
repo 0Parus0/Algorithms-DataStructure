@@ -156,7 +156,7 @@ console.log(findNeedle("abcbacdba", "acd"));
 
 // function stringNaiveSearch(long, short) {
 //   let count = 0;
-//   for(let i = 0; i < long.length; i++) {
+//   for(let i = 0; i < long.length - short.length + 1; i++) {
 //     for(let j = 0; j < short.length; j++) {
 //       if (short[j] !== long[i + j]) break;
 //       if( j === short.length -1) count++;
@@ -166,7 +166,7 @@ console.log(findNeedle("abcbacdba", "acd"));
 // }
 
 // function stringNaiveSearch(str, pattern) {
-//   for (let i = 0; i < str.length; i++) {
+//   for (let i = 0; i < str.length - pattern.length + 1; i++) {
 //     for (let j = 0; j < pattern.length; j++) {
 //       if (pattern[j] !== str[i + j]) break;
 //       // if j pointer has reached to end of the pattern that means we have found a match which is starting on the ith index of str so we have to return i;

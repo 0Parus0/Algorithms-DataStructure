@@ -143,66 +143,64 @@ function sortVowelsOld(str) {
   return vowels.length ? newResult : result;
 }
 
-
-function sortVowels1(str){
+function sortVowels1(str) {
   let n = str.length;
   let upperCount = new Array(26).fill(0);
   let lowerCount = new Array(26).fill(0);
 
-  let lowerVowels = 'aeiou';
-  let upperVowels = 'AEIOU';
+  let lowerVowels = "aeiou";
+  let upperVowels = "AEIOU";
 
   let result = [];
-  for(let i = 0; i < n; i++){
-    if(lowerVowels.includes(str[i] )){
+  for (let i = 0; i < n; i++) {
+    if (lowerVowels.includes(str[i])) {
       let index = str[i].charCodeAt() - 97;
       lowerCount[index] += 1;
-      result.push('#');
-    }
-    else if(upperVowels.includes(str[i])){
+      result.push("#");
+    } else if (upperVowels.includes(str[i])) {
       let index = str[i].charCodeAt() - 65;
       upperCount[index] += 1;
 
-      result.push('#');
+      result.push("#");
     } else result.push(str[i]);
   }
 
   let vowels = [];
 
-  for(let i = 0; i < 26; i++){
-    let charCode = 'A'.charCodeAt() + i;
-    let  char = String.fromCharCode(charCode);
-    while(upperCount[i] > 0){
+  for (let i = 0; i < 26; i++) {
+    let charCode = "A".charCodeAt() + i;
+    let char = String.fromCharCode(charCode);
+    while (upperCount[i] > 0) {
       vowels.push(char);
-      upperCount[i] --;
+      upperCount[i]--;
     }
   }
 
-  for(let i = 0; i < 26; i++){
-    let charCode = 'a'.charCodeAt() + i;
+  for (let i = 0; i < 26; i++) {
+    let charCode = "a".charCodeAt() + i;
     let char = String.fromCharCode(charCode);
-    while(lowerCount[i] > 0) {
+    while (lowerCount[i] > 0) {
       vowels.push(char);
       lowerCount[i]--;
     }
   }
 
-  let first = 0, second = 0;
-  while(first < result.length || second < vowels.length){
-    if(result[first] === '#'){
+  let first = 0,
+    second = 0;
+  while (first < result.length || second < vowels.length) {
+    if (result[first] === "#") {
       result[first] = vowels[second];
       second++;
-    } 
+    }
     first++;
   }
 
-  return result.join('');
-
+  return result.join("");
 }
 
 function sortVowels(str) {
   let vowels = [];
-  let vowelSet = new Set('aeiouAEIOU');
+  let vowelSet = new Set("aeiouAEIOU");
 
   // Collect vowels from the string
   for (let char of str) {
@@ -217,7 +215,7 @@ function sortVowels(str) {
   // Rebuild the string, replacing vowels in their original positions
   let result = [];
   let vowelIndex = 0;
-  
+
   for (let char of str) {
     if (vowelSet.has(char)) {
       result.push(vowels[vowelIndex]);
@@ -227,18 +225,101 @@ function sortVowels(str) {
     }
   }
 
-  return result.join('');
+  return result.join("");
+}
+function sortVowels(str) {
+  const vowels = "AEIOUaeiou";
+  const counts = {};
+  for (let v of vowels) counts[v] = 0;
+
+  // Count occurrences
+  for (let ch of str) {
+    if (counts.hasOwnProperty(ch)) counts[ch]++;
+  }
+
+  // Sorted order of vowels
+  const sortedVowels = [..."AEIOUaeiou"].sort(); // constant length = 10
+  let result = [];
+  let idx = 0;
+
+  // Replace vowels in sorted order
+  for (let ch of str) {
+    if (counts.hasOwnProperty(ch)) {
+      while (idx < sortedVowels.length && counts[sortedVowels[idx]] === 0) {
+        idx++;
+      }
+      result.push(sortedVowels[idx]);
+      counts[sortedVowels[idx]]--;
+    } else {
+      result.push(ch);
+    }
+  }
+
+  return result.join("");
+}
+
+function sortVowelsOptimized(str) {
+  const n = str.length;
+  const result = [];
+
+  // O(1) vowel lookup using Sets
+  const lowerVowels = new Set(["a", "e", "i", "o", "u"]);
+  const upperVowels = new Set(["A", "E", "I", "O", "U"]);
+
+  // Frequency arrays for counting sort
+  const lowerCount = new Array(26).fill(0);
+  const upperCount = new Array(26).fill(0);
+
+  // Step 1️⃣: Count vowels and mark their positions
+  for (let i = 0; i < n; i++) {
+    const ch = str[i];
+    if (lowerVowels.has(ch)) {
+      lowerCount[ch.charCodeAt(0) - 97]++;
+      result.push("#");
+    } else if (upperVowels.has(ch)) {
+      upperCount[ch.charCodeAt(0) - 65]++;
+      result.push("#");
+    } else {
+      result.push(ch);
+    }
+  }
+
+  // Step 2️⃣: Build sorted vowels using frequency order
+  const vowels = [];
+
+  // Uppercase vowels come first in lexicographical order
+  for (let i = 0; i < 26; i++) {
+    const char = String.fromCharCode(65 + i);
+    if (upperVowels.has(char)) {
+      while (upperCount[i]-- > 0) vowels.push(char);
+    }
+  }
+
+  // Then lowercase vowels
+  for (let i = 0; i < 26; i++) {
+    const char = String.fromCharCode(97 + i);
+    if (lowerVowels.has(char)) {
+      while (lowerCount[i]-- > 0) vowels.push(char);
+    }
+  }
+
+  // Step 3️⃣: Replace placeholders in order
+  let vowelIndex = 0;
+  for (let i = 0; i < n; i++) {
+    if (result[i] === "#") {
+      result[i] = vowels[vowelIndex++];
+    }
+  }
+
+  // Step 4️⃣: Join and return the final string
+  return result.join("");
 }
 
 console.log(sortVowels("LQRamBOHfq")); // Expected output: "LQROmBaHfq"
-console.log(sortVowels("lEetcOde"));    // Expected output: "lEOtcede"
-
-
+console.log(sortVowels("lEetcOde")); // Expected output: "lEOtcede"
 
 // console.log(sortVowels1("LQRamBOHfq")); // Expected output: "LQROmBaHfq"
 
-
 // console.log(sortVowelsOld("LQRamBOHfq")); // Expected output: "LQRamBOHfq"
-
 
 // console.log(sortVowels1("LQRamBOHfq"));

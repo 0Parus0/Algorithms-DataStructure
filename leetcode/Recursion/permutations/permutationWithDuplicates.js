@@ -57,7 +57,7 @@ function swap(arr, i, j) {
 
 function permuteUnique1(nums) {
   let result = [];
-  nums.sort((a, b) => a - b); // Sort the array to handle duplicates
+  // nums.sort((a, b) => a - b); // Sort the array to handle duplicates // not required with the set
 
   function helper(index) {
     if (index === nums.length) {
@@ -73,7 +73,7 @@ function permuteUnique1(nums) {
 
       used.add(nums[i]); // Mark the element as used
       swap(nums, i, index); // Swap the current element with the index
-      helper(index + 1);    // Recurse for the next element
+      helper(index + 1); // Recurse for the next element
       swap(nums, i, index); // Backtrack by swapping back
     }
   }
@@ -83,29 +83,28 @@ function permuteUnique1(nums) {
 }
 
 function permuteUnique2(nums) {
-    let result = [];
+  let result = [];
 
-    
-    function helper(index){
-      let used = new Array(21).fill(0);
-      
-        if(index === nums.length) {
-            result.push([...nums]);
-            return;
-        }
-        
-        for(let i = index; i < nums.length; i++){
-            if(used[nums[i] + 10] === 0)  {
-                swap(nums, i, index);
-                helper(index + 1);
-                swap(nums, i, index);
-                used[nums[i] + 10] = 1;
-            }
-        }
+  function helper(index) {
+    let used = new Array(21).fill(0);
+
+    if (index === nums.length) {
+      result.push([...nums]);
+      return;
     }
 
-    helper(0);
-    return result;
+    for (let i = index; i < nums.length; i++) {
+      if (used[nums[i] + 10] === 0) {
+        swap(nums, i, index);
+        helper(index + 1);
+        swap(nums, i, index);
+        used[nums[i] + 10] = 1;
+      }
+    }
+  }
+
+  helper(0);
+  return result;
 }
 
-console.log(permuteUnique2([1,1,2]));
+console.log(permuteUnique2([1, 1, 2]));

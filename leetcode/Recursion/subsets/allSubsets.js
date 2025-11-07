@@ -106,29 +106,29 @@ function subsets(nums, depth = 0, subset = [], results = []) {
 
 // console.log(subsets([1, 2, 3]));
 
-// function subsequence(arr) {
-//   let result = [];
-//   let temp = [];
-//   index = 0;
-//   function helper(arr, index, temp) {
-//     // console.log(temp, index);
-//     if (index === arr.length) {
-//       // if no empty  subsets/subsequences are included
-//       // if (temp.length > 0) result.push(temp);
+function subsequence(arr) {
+  let result = [];
+  let temp = [];
+  index = 0;
+  function helper(arr, index, temp) {
+    // console.log(temp, index);
+    if (index === arr.length) {
+      // if no empty  subsets/subsequences are included
+      // if (temp.length > 0) result.push(temp);
 
-//       // if empty subsets/subsequences are included
-//       result.push(temp);
-//       return;
-//     }
-//     // recursive call to include the arr[i]
-//     helper(arr, index + 1, [...temp, arr[index]]);
+      // if empty subsets/subsequences are included
+      result.push(temp);
+      return;
+    }
+    // recursive call to include the arr[i]
+    helper(arr, index + 1, [...temp, arr[index]]);
 
-//     // recursive call to not include the arr[i]
-//     helper(arr, index + 1, temp);
-//   }
-//   helper(arr, index, temp);
-//   return result;
-// }
+    // recursive call to not include the arr[i]
+    helper(arr, index + 1, temp);
+  }
+  helper(arr, index, temp);
+  return result;
+}
 
 // console.log(subsequence([1, 2, 3]));
 
@@ -186,14 +186,13 @@ function subseq(arr, index = 0, n = arr.length, ans = [], temp = []) {
   if (index === n) {
     ans.push([...temp]);
     return;
-  } 
-    subseq(arr, index + 1, n, ans, temp);
-    temp.push(arr[index]);
-    subseq(arr, index + 1, n, ans, temp);
-    temp.pop();
-  
- return ans;
-}
+  }
+  subseq(arr, index + 1, n, ans, temp);
+  temp.push(arr[index]);
+  subseq(arr, index + 1, n, ans, temp);
+  temp.pop();
 
+  return ans;
+}
 
 console.log(subseq([1, 2, 3]));

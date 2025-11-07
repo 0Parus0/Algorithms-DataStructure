@@ -5,8 +5,8 @@ function printSum(arr) {
   function recurse(temp = [], index = 0, sum = 0) {
     // base condition
     if (index === arr.length) {
-      console.log(sum, [...temp]);
-      result.push([...temp]);
+      // console.log(sum, [...temp]);
+      result.push({ sum, subset: [...temp] });
       return;
     }
     // Not included

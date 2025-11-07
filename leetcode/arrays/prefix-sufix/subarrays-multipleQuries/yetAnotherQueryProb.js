@@ -65,85 +65,89 @@ Constraints:
 1 <= A[i] <= 105
 */
 /* Brute Force approach */
-function freqCount(arr, n, L, R, K){
-    let result = 0; // To return the frequency of given index A[i]
-    for(let i = L; i <= R; i++){
-        // Iterate from index L to index R inclusive
-        let freq = 0; // If subarray contains the element increase freq
+function freqCount(arr, n, L, R, K) {
+  let result = 0; // To return the frequency of given index A[i]
+  for (let i = L; i <= R; i++) {
+    // Iterate from index L to index R inclusive
+    let freq = 0; // If subarray contains the element increase freq
 
-        for(let j = i; j < n; j++){
-            if(arr[j] === arr[i]) freq++;
-        }
-        
-        if(freq === K) result++;
+    for (let j = i; j < n; j++) {
+      if (arr[j] === arr[i]) freq++;
     }
 
-    return result;
+    if (freq === K) result++;
+  }
+
+  return result;
 }
 
-function processQueries(arr, n, queries){
-    let results = [] 
+function processQueries(arr, n, queries) {
+  let results = [];
 
-    for(let query of queries){
-        let L = query[0];
-        let R = query[1];
-        let K = query[2];
+  for (let query of queries) {
+    let L = query[0];
+    let R = query[1];
+    let K = query[2];
 
-        let result = freqCount(arr, n, L, R, K);
-        results.push(result);
-    }
+    let result = freqCount(arr, n, L, R, K);
+    results.push(result);
+  }
 
-    return results;
+  return results;
 }
 let arr = [1, 1, 3, 4, 3];
-let queries = [[0, 2, 2], [0, 2, 1], [0, 4, 2]];
+let queries = [
+  [0, 2, 2],
+  [0, 2, 1],
+  [0, 4, 2],
+];
 
 /* Optimize Solution */
 
+function computeFreq(arr, n) {
+  // Array to store frequency maps for each index
+  let freqMap = new Array(n).fill(null).map(() => new Map());
 
-function computeFreq(arr, n){
-    // Array to store frequency maps for each index
-    let freqMap = new Array(n).fill(null).map(() => new Map());
-    console.log(freqMap)
+  // Frequency map to store counts from current index to the end of array
+  let currFreq = new Map();
+  // Traverse the array from right to left compute frequencies
+  for (let i = n - 1; i >= 0; i--) {
+    let elm = arr[i];
 
-    // Frequency map to store counts from current index to the end of array
-    let currFreq = new Map();
-    // Traverse the array from right to left compute frequencies
-    for(let i = n -1; i >= 0; i--){
-        let elm = arr[i];
-
-        // Update the frequency of arr[i]
-        if(!currFreq.has(elm)){
-            currFreq.set(elm, 0);
-        }
-        currFreq.set(elm, currFreq.get(elm) + 1)
-
-        // Copy the current frequency map to freqMap[i];
-        freqMap[i] = new Map(currFreq);
+    // Update the frequency of arr[i]
+    if (!currFreq.has(elm)) {
+      currFreq.set(elm, 0);
     }
-    return freqMap
+    currFreq.set(elm, currFreq.get(elm) + 1);
+
+    // Copy the current frequency map to freqMap[i];
+    freqMap[i] = new Map(currFreq);
+    console.log(freqMap);
+  }
+  return freqMap;
 }
 
-function processQueriesOptimized(arr, n, queries, freqMap){
-    let results = [];
-    
-    for(let query of queries){
-        let L = query[0];
-        let R = query[1];
-        let K = query[2];
+function processQueriesOptimized(arr, n, queries, freqMap) {
+  let results = [];
 
-        let result = 0;
+  for (let query of queries) {
+    let L = query[0];
+    let R = query[1];
+    let K = query[2];
 
-        // Traverse the range [L, R];
-        for(let i = L; i <= R; i++){
-            let elm = arr[i];
-            // Check if the frequency of elm from index i to n -1 equals K
-            if(freqMap[i].get(elm) === K) result++;
-        }
-        results.push(result);
+    let result = 0;
+
+    // Traverse the range [L, R];
+    for (let i = L; i <= R; i++) {
+      let elm = arr[i];
+      // Check if the frequency of elm from index i to n -1 equals K
+      if (freqMap[i].get(elm) === K) result++;
     }
-    return results;
+    results.push(result);
+  }
+  return results;
 }
 
 let computeFrequencies = computeFreq(arr, 5);
-console.log(processQueriesOptimized(arr, 5, queries, computeFrequencies));
+console.log(computeFreq);
+// console.log(processQueriesOptimized(arr, 5, queries, computeFrequencies));

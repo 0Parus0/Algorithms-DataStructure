@@ -35,53 +35,77 @@ All elements of candidates are distinct.
 1 <= target <= 40
 */
 
-function ways(nums, sum) {
-    function helper(sum) {
-        if (sum === 0) return 1; // If sum reaches 0, one valid way is found
-        if (sum < 0) return 0; // If sum goes negative, this path is invalid
+function ways1(nums, sum) {
+  function helper(sum) {
+    if (sum === 0) return 1; // If sum reaches 0, one valid way is found
+    if (sum < 0) return 0; // If sum goes negative, this path is invalid
 
-        let result = 0;
-        for (let i = 0; i < nums.length; i++) {
-            result += helper(sum - nums[i]); // Accumulate valid ways
-        }
-
-        return result;
+    let result = 0;
+    for (let i = 0; i < nums.length; i++) {
+      result += helper(sum - nums[i]); // Accumulate valid ways
     }
 
-    return helper(sum);
+    return result;
+  }
+
+  return helper(sum);
 }
 
-function way(nums, sum) {
-    let result = 0;
+function ways(nums, sum) {
+  let result = 0;
 
-    if(sum === 0) return 1;
-    if(sum < 0) return 0;
+  if (sum === 0) return 1;
+  if (sum < 0) return 0;
 
-    for(let i = 0; i < nums.length; i++){
-        result += way(nums, sum - nums[i]);
-    }
-    return result;
+  for (let i = 0; i < nums.length; i++) {
+    result += ways(nums, sum - nums[i]);
+  }
+  return result;
 }
 function waysWithMemo(nums, sum) {
-    let memo = new Map();
+  let memo = new Map();
 
-    function helper(sum) {
-        if (sum === 0) return 1; // If sum reaches 0, one valid way is found
-        if (sum < 0) return 0; // If sum goes negative, this path is invalid
+  function helper(sum) {
+    if (sum === 0) return 1; // If sum reaches 0, one valid way is found
+    if (sum < 0) return 0; // If sum goes negative, this path is invalid
 
-        if (memo.has(sum)) return memo.get(sum); // Check memo for cached result
+    if (memo.has(sum)) return memo.get(sum); // Check memo for cached result
 
-        let result = 0;
-        for (let i = 0; i < nums.length; i++) {
-            result += helper(sum - nums[i]); // Accumulate valid ways
-        }
-
-        memo.set(sum, result); // Store result in memo
-        return result;
+    let result = 0;
+    for (let i = 0; i < nums.length; i++) {
+      result += helper(sum - nums[i]); // Accumulate valid ways
     }
 
-    return helper(sum);
+    memo.set(sum, result); // Store result in memo
+    return result;
+  }
+
+  return helper(sum);
 }
 
+function waysBackTrack(candidates, target) {
+  const result = [];
+  candidates.sort((a, b) => a - b); // Sort to enable early termination
 
-console.log(way([1,  5, 6], 7));
+  function backtrack(start, currentSum, path) {
+    if (currentSum === target) {
+      result.push([...path]);
+      return;
+    }
+
+    for (let i = start; i < candidates.length; i++) {
+      if (currentSum + candidates[i] > target) {
+        break; // Early termination since array is sorted
+      }
+
+      path.push(candidates[i]);
+      backtrack(i, currentSum + candidates[i], path);
+      path.pop();
+    }
+  }
+
+  backtrack(0, 0, []);
+  return result;
+}
+
+console.log(ways([1, 5, 6], 7));

@@ -181,6 +181,42 @@ class SinglyLinkedList {
   }
 }
 
+function reverseIterative(head) {
+  let prev = null;
+  let current = head;
+
+  while (current) {
+    let next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
+  }
+
+  return prev;
+}
+
+function reverseList(head) {
+  if (!head || !head.next) return head;
+
+  // Imagine: [HEAD] → [REST OF LIST]
+  // We want: [REVERSED REST] ← [HEAD]
+
+  // Reverse everything after head
+  const newHead = reverseList(head.next);
+
+  // At this point:
+  // head.next is still pointing to what was originally the next node
+  // but that next node is now the last node of the reversed portion
+
+  // Make the last node of reversed portion point back to current node
+  head.next.next = head; // This creates the backward link
+
+  // Sever the original forward link
+  head.next = null;
+
+  return newHead;
+}
+
 function revers1(head) {
   // base case
   if (!head || !head.next) return head;
@@ -189,6 +225,30 @@ function revers1(head) {
   head.next = null;
 
   return next;
+}
+
+function reverseList(head) {
+  // BASE CASE: If we've reached the end of the list
+  // or the list is empty, just return the current node
+  if (head === null || head.next === null) {
+    return head;
+  }
+
+  // STEP 1: Reverse everything after the current node
+  // This gives us the reversed list starting from head.next
+  const reversedTail = reverseList(head.next);
+
+  // STEP 2: The node after current (head.next) should now
+  // point back to the current node to reverse the connection
+  head.next.next = head;
+
+  // STEP 3: Break the original forward connection
+  // (This will be fixed in previous recursive calls)
+  head.next = null;
+
+  // The new head of the reversed list is the node
+  // that was originally at the end
+  return reversedTail;
 }
 
 const singlyLinkedList = new SinglyLinkedList();

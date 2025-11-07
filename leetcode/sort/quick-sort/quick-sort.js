@@ -20,22 +20,56 @@
  * ****************
  */
 
+function quickSortOptimized(arr, low = 0, high = arr.length - 1) {
+  if (low < high) {
+    // Random pivot to avoid worst-case scenario
+    const randomIndex = Math.floor(Math.random() * (high - low + 1)) + low;
+    [arr[randomIndex], arr[high]] = [arr[high], arr[randomIndex]];
+
+    const pivotIndex = partition(arr, low, high);
+    quickSortOptimized(arr, low, pivotIndex - 1);
+    quickSortOptimized(arr, pivotIndex + 1, high);
+  }
+  return arr;
+}
+
+function partition(arr, low, high) {
+  const pivot = arr[high];
+  let i = low - 1;
+
+  for (let j = low; j < high; j++) {
+    if (arr[j] <= pivot) {
+      i++;
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+
+  [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+  return i + 1;
+}
+
 function swap(arr, i, j) {
   let temp = arr[i];
   arr[i] = arr[j];
   arr[j] = temp;
 }
 
-function pivot(arr, first = 0) {
-  let pivot = arr[first];
-  let pivotIdx = first;
-  for (let i = first + 1; i < arr.length; i++) {
+function pivot(arr, left = 0, right = arr.length - 1) {
+  // Random pivot to avoid worst-case performance
+  const randomIndex = Math.floor(Math.random() * (right - left + 1)) + left;
+  swap(arr, left, randomIndex);
+
+  let pivot = arr[left];
+  let pivotIdx = left;
+
+  for (let i = left + 1; i <= right; i++) {
     if (pivot > arr[i]) {
       pivotIdx++;
       swap(arr, pivotIdx, i);
     }
   }
-  swap(arr, first, pivotIdx);
+
+  swap(arr, left, pivotIdx);
   return pivotIdx;
 }
 
