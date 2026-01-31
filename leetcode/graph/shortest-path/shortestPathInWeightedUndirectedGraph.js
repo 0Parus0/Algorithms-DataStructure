@@ -109,7 +109,7 @@ function shortestPath(n, m, edges) {
   minHeap.insert([0, 0]);
 
   while (!minHeap.isEmpty()) {
-    const [d, node] = Minheap.extractMin();
+    const [d, node] = minHeap.extractMin();
     if (d > dist[node]) continue;
 
     for (let [neighbor, wt] of adj[node]) {
@@ -144,3 +144,112 @@ function shortestPath(n, m, edges) {
 | ⚠️ **Array + sort each time** (`minHeap.sort()`)           | O(log V × E) worst | O(1)       | **O(E log V)** but with big constant factor                |
 | 🚫 **Array + linear scan for min**                         | O(1)               | O(V)       | **O(V² + E V)** → simplifies to **O(V²)** for dense graphs |
 */
+
+class MinHeap {
+  constructor(arr = []) {
+    this.heap = Array.isArray(arr) && arr.length ? arr.slice() : [];
+    if (this.heap.length > 1) {
+      this.buildHeap();
+    }
+  }
+
+  buildHeap() {
+    const n = this.heap.length;
+    const firstNonLeaf = Math.floor(n / 2) - 1;
+    for (let i = firstNonLeaf; i >= 0; i--) {
+      this.heapifyDown(i);
+    }
+  }
+  insert(val) {
+    this.heap.push(val);
+    this.heapifyUp();
+  }
+
+  extractMin() {
+    if (this.heap.length === 0) return null;
+    if (this.heap.length === 1) return this.heap.pop();
+
+    let min = this.heap[0];
+    this.heap[0] = this.heap.pop();
+    this.heapifyDown(0);
+    return min;
+  }
+
+  heapifyUp(i = this.heap.length - 1) {
+    while (i > 0) {
+      let parent = Math.floor((i - 1) / 2);
+      if (this.heap[parent][0] > this.heap[i][0]) {
+        [this.heap[parent], this.heap[i]] = [this.heap[i], this.heap[parent]];
+        i = parent;
+      } else break;
+    }
+  }
+
+  heapifyDown(i = 0) {
+    const n = this.heap.length;
+    while (true) {
+      let left = i * 2 + 1;
+      let right = i * 2 + 2;
+      let smallest = i;
+      if (left < n && this.heap[left][0] < this.heap[smallest][0])
+        smallest = left;
+      if (right < n && this.heap[right][0] < this.heap[smallest][0])
+        smallest = right;
+
+      if (smallest === i) break;
+      [this.heap[smallest], this.heap[i]] = [this.heap[i], this.heap[smallest]];
+
+      i = smallest;
+    }
+  }
+  isEmpty() {
+    return this.heap.length === 0;
+  }
+
+  size() {
+    return this.heap.length;
+  }
+}
+
+function shortestPath(n, m, edges) {
+  const adj = Array.from({ length: n + 1 }, () => []);
+  for (let [u, v, wt] of edges) {
+    adj[u].push([v, wt]);
+    adj[v].push([u, wt]);
+  }
+
+  const pq = new MinHeap();
+
+  const distance = new Array(n + 1).fill(Infinity);
+  const parent = Array.from({ length: n + 1 }, (_, i) => i);
+
+  distance[1] = 0;
+  pq.insert([0, 1]);
+
+  while (!pq.isEmpty()) {
+    const [dist, u] = pq.extractMin();
+    if (dist > distance[u]) continue;
+
+    for (let [v, wt] of adj[u]) {
+      let newDist = dist + wt;
+      if (newDist < distance[v]) {
+        distance[v] = newDist;
+        parent[v] = u;
+        pq.insert([newDist, v]);
+      }
+    }
+  }
+
+  let dest = n;
+  if (distance[dest] === Infinity) return [-1];
+
+  let path = [];
+  while (parent[dest] !== dest) {
+    path.push(dest);
+    dest = parent[dest];
+  }
+
+  path.push(1);
+  path = path.reverse();
+  return [distance[n], ...path];
+}

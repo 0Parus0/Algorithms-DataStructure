@@ -77,4 +77,4 @@ function minimizeMaxSum(arr) {
   return result;
 }
 
-console.log(minimizeMaxSum([9, 2, 10, 1, 10, 4, 8, 9, 7, 6, 5, 4, 3, 2, 10]));
+// console.log(minimizeMaxSum([9, 2, 10, 1, 10, 4, 8, 9, 7, 6, 5, 4, 3, 2, 10]));

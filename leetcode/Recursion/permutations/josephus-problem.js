@@ -14,23 +14,36 @@ Given the number of friends, n, and an integer k, return the winner of the game.
 */
 
 function findTheWinnerR(n, k) {
+  // Recursive helper function that returns 0-based index of winner
   function josephus(n, k) {
-    if (n === 1) return 0; // Base case: only one person left (index 0)
+    // Base case: if only 1 person remains, they win (index 0)
+    if (n === 1) return 0;
+
+    // Recursive case:
+    // 1. Solve for n-1 people to get the winner's position in smaller circle
+    // 2. Add k to account for the elimination shift
+    // 3. Use modulo n to handle circular wrapping
     return (josephus(n - 1, k) + k) % n;
   }
 
-  return josephus(n, k) + 1; // Convert 0-based index to 1-based
+  // Convert 0-based index to 1-based numbering (since friends are numbered 1 to n)
+  return josephus(n, k) + 1;
 }
 
 function findTheWinnerI(n, k) {
-  let winner = 0; // For 1 person, winner is at index 0
+  // Start with the base case: for 1 person, winner is at index 0
+  let winner = 0;
 
-  // Build up solution from 1 to n people
+  // Build up the solution from 2 to n people
   for (let i = 2; i <= n; i++) {
+    // For a circle of i people, the winner's position is:
+    // (winner position for i-1 people + k) % i
+    // This accounts for the circular nature and elimination shift
     winner = (winner + k) % i;
   }
 
-  return winner + 1; // Convert 0-based to 1-based
+  // Convert 0-based index to 1-based numbering
+  return winner + 1;
 }
 
 function findTheWinnerEasy(n, k) {
@@ -50,35 +63,41 @@ function findTheWinnerEasy(n, k) {
   return circle[0];
 }
 
-function findTheWinnerBest(n, k) {
-  let winner = 0;
-  for (let i = 2; i <= n; i++) {
-    winner = (winner + k) % i;
-  }
-  return winner + 1;
-}
-
 function myWinner(n, k) {
-  let persons = new Array(n).fill(0);
+  let persons = new Array(n).fill(0); // 0 = alive, 1 = eliminated
+  let personsLeft = n;
+  let currentIndex = 0;
 
-  function winner(persons, n, index, personsLeft, k) {
+  function winner() {
     if (personsLeft === 1) {
+      // Find and return the last surviving person (1-based)
       for (let i = 0; i < n; i++) {
-        if (persons[i] === 0) return i;
+        if (persons[i] === 0) return i + 1;
       }
     }
 
-    let kill = (k - 1) % personsLeft;
-    while (kill--) {
-      index = (index + 1) % n;
-
-      while (persons[index] === 1) index = (index + 1) % n; // skip the killed persons
+    // Count k alive persons (skip eliminated ones)
+    let count = 0;
+    while (count < k) {
+      if (persons[currentIndex] === 0) {
+        count++;
+      }
+      if (count < k) {
+        currentIndex = (currentIndex + 1) % n;
+      }
     }
 
-    persons[index] = 1;
+    // Eliminate the k-th alive person
+    persons[currentIndex] = 1;
+    personsLeft--;
 
-    winner(persons, n, index, personsLeft - 1, k);
+    // Move to next alive person
+    do {
+      currentIndex = (currentIndex + 1) % n;
+    } while (persons[currentIndex] === 1);
+
+    return winner();
   }
 
-  return winner(persons, n, 0, n, k);
+  return winner();
 }

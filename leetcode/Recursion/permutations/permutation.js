@@ -28,7 +28,7 @@ function permute(nums) {
   let temp = [];
 
   function helper(visited, temp) {
-    if (visited.length === temp.length) {
+    if (temp.length === nums.length) {
       result.push([...temp]);
       return;
     }

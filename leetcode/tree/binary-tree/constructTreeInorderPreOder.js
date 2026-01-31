@@ -118,12 +118,6 @@ class Solution {
     // Initialize preorder index (will be shared across recursive calls)
     let preIndex = 0;
 
-    /**
-     * RECURSIVE HELPER FUNCTION to build tree
-     * @param {number} inStart - Start index in inorder array
-     * @param {number} inEnd - End index in inorder array
-     * @return {Node} - Root of current subtree
-     */
     const build = (inStart, inEnd) => {
       // Base case: no elements to process
       if (inStart > inEnd) {

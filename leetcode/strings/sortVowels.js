@@ -227,6 +227,7 @@ function sortVowels(str) {
 
   return result.join("");
 }
+
 function sortVowels(str) {
   const vowels = "AEIOUaeiou";
   const counts = {};

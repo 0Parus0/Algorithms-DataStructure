@@ -33,7 +33,46 @@ board[i][j] is a digit or '.'.
 It is guaranteed that the input board has only one solution.
 */
 
-function sodukuSolver(board) {
+function sudokuSolver(board) {
+  function isValid(row, col, num) {
+    const numStr = num.toString();
+
+    for (let i = 0; i < 9; i++) {
+      if (board[row][i] === numStr) return false;
+      if (board[i][col] === numStr) return false;
+    }
+
+    const startI = Math.floor(row / 3) * 3;
+    const startJ = Math.floor(col / 3) * 3;
+
+    for (let j = 0; j < 3; j++) {
+      for (let k = 0; k < 3; k++) {
+        if (board[startI + j][startJ + k] === numStr) return false;
+      }
+    }
+    return true;
+  }
+  function solve(board) {
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        if (board[i][j] === ".") {
+          for (let k = 1; k <= 9; k++) {
+            if (isValid(i, j, k)) {
+              board[i][j] = k.toString();
+              if (solve(board) === true) return true;
+              board[i][j] = ".";
+            }
+          }
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+  return solve(board);
+}
+
+function sudokuSolver(board) {
   function check(num, i, j) {
     num = num.toString();
     // Check in same row

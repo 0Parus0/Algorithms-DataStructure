@@ -29,11 +29,11 @@ function minSubArr(arr, target) {
   const len = arr.length;
   let start = 0;
   total = 0;
-  let minLen;
+  let minLen = Infinity;
   for (let end = 0; end < len; end++) {
     total += arr[end];
     while (total >= target) {
-      minLen = end - start + 1;
+      minLen = Math.min(minLen, end - start + 1);
       total -= arr[start++];
     }
   }

@@ -35,7 +35,48 @@ Constraints:
 
 1 <= nums.length <= 105
 1 <= nums[i] <= 105
+
 */
+function maxAlternatingSum(nums) {
+  const n = nums.length;
+
+  const dp = Array.from({ length: n }, () => new Array(2).fill(-1));
+
+  function solve(idx, isEven) {
+    if (idx >= n) {
+      return 0;
+    }
+
+    if (isEven && dp[idx][0] !== -1) return dp[idx][0];
+    if (!isEven && dp[idx][1] !== -1) return dp[idx][1];
+    const skip = solve(idx + 1, isEven);
+    let val = isEven ? nums[idx] : -nums[idx];
+    const take = solve(idx + 1, !isEven) + val;
+
+    const result = Math.max(skip, take);
+    dp[idx][isEven ? 0 : 1] = result;
+    return dp[idx][isEven ? 0 : 1];
+  }
+
+  return solve(0, true);
+}
+
+var maxAlternatingSum = function (nums) {
+  const n = nums.length;
+
+  const dp = Array.from({ length: n + 1 }, () => new Array(2).fill(0));
+
+  for (let i = 1; i <= n; i++) {
+    // Calculating Even
+    dp[i][0] = Math.max(dp[i - 1][1] - nums[i - 1], dp[i - 1][0]);
+    // Calculating Odd
+    dp[i][1] = Math.max(dp[i - 1][0] + nums[i - 1], dp[i - 1][1]);
+  }
+
+  return Math.max(dp[n][0], dp[n][1]);
+};
+
+/* Older */
 function maxAlternatingSum(nums) {
   let even = 0; // Initializing max sum ending with even index
   let odd = 0; // Initializing max sum ending with odd index

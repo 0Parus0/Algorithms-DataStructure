@@ -35,54 +35,54 @@ function quickSortOptimized(arr, low = 0, high = arr.length - 1) {
 
 function partition(arr, low, high) {
   const pivot = arr[high];
-  let i = low - 1;
+  let pivotIdx = low;
 
-  for (let j = low; j < high; j++) {
-    if (arr[j] <= pivot) {
-      i++;
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-  }
-
-  [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
-  return i + 1;
-}
-
-function swap(arr, i, j) {
-  let temp = arr[i];
-  arr[i] = arr[j];
-  arr[j] = temp;
-}
-
-function pivot(arr, left = 0, right = arr.length - 1) {
-  // Random pivot to avoid worst-case performance
-  const randomIndex = Math.floor(Math.random() * (right - left + 1)) + left;
-  swap(arr, left, randomIndex);
-
-  let pivot = arr[left];
-  let pivotIdx = left;
-
-  for (let i = left + 1; i <= right; i++) {
-    if (pivot > arr[i]) {
+  for (let i = low; i < high; i++) {
+    if (arr[i] <= pivot) {
+      [arr[i], arr[pivotIdx]] = [arr[pivotIdx], arr[i]];
       pivotIdx++;
-      swap(arr, pivotIdx, i);
     }
   }
 
-  swap(arr, left, pivotIdx);
+  [arr[pivotIdx], arr[high]] = [arr[high], arr[pivotIdx]];
   return pivotIdx;
 }
 
-console.log(pivot([4, 8, 2, 1, 5, 7, 6, 3]));
+// function swap(arr, i, j) {
+//   let temp = arr[i];
+//   arr[i] = arr[j];
+//   arr[j] = temp;
+// }
 
-function quickSort(arr, left = 0, right = arr.length - 1) {
-  if (left < right) {
-    let pivotIdx = pivot(arr, left);
-    quickSort(arr, left, pivotIdx - 1);
-    quickSort(arr, pivotIdx + 1, right);
-  }
-  return arr;
-}
+// function pivot(arr, left = 0, right = arr.length - 1) {
+//   // Random pivot to avoid worst-case performance
+//   const randomIndex = Math.floor(Math.random() * (right - left + 1)) + left;
+//   swap(arr, left, randomIndex);
+
+//   let pivot = arr[left];
+//   let pivotIdx = left;
+
+//   for (let i = left + 1; i <= right; i++) {
+//     if (pivot > arr[i]) {
+//       pivotIdx++;
+//       swap(arr, pivotIdx, i);
+//     }
+//   }
+
+//   swap(arr, left, pivotIdx);
+//   return pivotIdx;
+// }
+
+// console.log(pivot([4, 8, 2, 1, 5, 7, 6, 3]));
+
+// function quickSort(arr, left = 0, right = arr.length - 1) {
+//   if (left < right) {
+//     let pivotIdx = pivot(arr, left);
+//     quickSort(arr, left, pivotIdx - 1);
+//     quickSort(arr, pivotIdx + 1, right);
+//   }
+//   return arr;
+// }
 // function pivot(arr, start = 0, end = arr.length - 1) {
 //   let pivot = arr[start];
 //   let swapIdx = start;
@@ -110,4 +110,4 @@ function quickSort(arr, left = 0, right = arr.length - 1) {
 //   return arr;
 // }
 
-console.log(quickSort([4, 8, 2, 1, 100, -345, 0, 77, 3]));
+console.log(quickSortOptimized([4, 8, 2, 1, 0, 0, 0, 100, -345, 0, 77, 3]));

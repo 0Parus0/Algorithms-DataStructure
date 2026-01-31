@@ -62,6 +62,58 @@ Constraints:
 
 function maxCollectedFruits(fruits) {
   const n = fruits.length;
+  const dp = Array.from({ length: n }, () => new Array(n).fill(-1));
+
+  function child1Collect() {
+    let count = 0;
+    for (let i = 0; i < n; i++) {
+      count += fruits[i][i];
+    }
+
+    return count;
+  }
+
+  function child2Collect(i, j) {
+    if (i >= n || j < 0 || j >= n) return 0;
+
+    if (i === n - 1 && j === n - 1) return 0;
+
+    if (i === j || i > j) return 0;
+
+    if (dp[i][j] !== -1) return dp[i][j];
+
+    const bottomLeft = fruits[i][j] + child2Collect(i + 1, j - 1);
+    const bottomDown = fruits[i][j] + child2Collect(i + 1, j);
+    const bottomRight = fruits[i][j] + child2Collect(i + 1, j + 1);
+
+    return (dp[i][j] = Math.max(bottomLeft, bottomDown, bottomRight));
+  }
+
+  function child3Collect(i, j) {
+    if (i < 0 || i >= n || j < 0 || j >= n) return 0;
+
+    if (i === n - 1 && j === n - 1) return 0;
+
+    if (i === j || i < j) return 0;
+
+    if (dp[i][j] !== -1) return dp[i][j];
+
+    const upRight = fruits[i][j] + child3Collect(i - 1, j + 1);
+    const right = fruits[i][j] + child3Collect(i, j + 1);
+    const bottomRight = fruits[i][j] + child3Collect(i + 1, j + 1);
+
+    return (dp[i][j] = Math.max(upRight, right, bottomRight));
+  }
+
+  const c1 = child1Collect();
+  const c2 = child2Collect(0, n - 1);
+  const c3 = child3Collect(n - 1, 0);
+
+  return c1 + c2 + c3;
+}
+
+function maxCollectedFruits(fruits) {
+  const n = fruits.length;
 
   function child1Collect() {
     let sum = 0;

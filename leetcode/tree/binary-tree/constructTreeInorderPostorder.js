@@ -26,8 +26,8 @@ class Solution {
       const inIndex = inorderMap.get(currentNode.key);
 
       // Important: Build right subtree first, then left subtree
-      currentNode.right = build(inIndex + 1, inEnd);
       currentNode.left = build(inStart, inIndex - 1);
+      currentNode.right = build(inIndex + 1, inEnd);
 
       return currentNode;
     };

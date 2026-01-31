@@ -36,4 +36,4 @@ function toh(num, source, helper, destination) {
 
 console.log("Total moves:", toh(3, "A", "B", "C"));
 
-// console.log(toh(5, 1, 2, 3));
+console.log(toh(5, "S", "H", "D"));

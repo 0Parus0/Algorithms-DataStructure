@@ -48,16 +48,17 @@ All the numbers of nums are unique.
  * Time complexity of this algorithm is => (2 * (2^N) -1) + (N * (2^N)) => O(N*2^N);
  */
 /* Recursive back tracking solution */
-function subsets(nums, depth = 0, subset = [], results = []) {
-  if (depth === nums.length) {
+function subsets(nums, index = 0, subset = [], results = []) {
+  if (index === nums.length) {
     results.push([...subset]);
   } else {
-    // excluding
-    subsets(nums, depth + 1, subset, results);
-    // including
-    subset.push(nums[depth]);
-    subsets(nums, depth + 1, subset, results);
+    // including - Take
+    subset.push(nums[index]);
+    subsets(nums, index + 1, subset, results);
     subset.pop();
+
+    // excluding - Skip
+    subsets(nums, index + 1, subset, results);
   }
   return results;
 }

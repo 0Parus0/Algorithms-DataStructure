@@ -41,40 +41,166 @@ Constraints:
 chars[i] is a lowercase English letter, uppercase English letter, digit, or symbol.
 */
 
+/**
+ * Problem Understanding:
+ * We’re compressing an array of characters in place.
+ * For each consecutive group of same characters:
+ *   - If count = 1 → just keep the char.
+ *   - If count > 1 → write the char followed by digits of count.
+ *
+ * The function must modify the input array and return the new length.
+ *
+ * Time Complexity: O(n)
+ * Space Complexity: O(1)
+ */
+
 function compress(chars) {
   let n = chars.length;
-  let index = 0; 
-  let i = 0;
-  
-  while(i < n) {
-    let currChar = chars[i];
+  let index = 0; // write pointer
+  let i = 0; // read pointer
+
+  while (i < n) {
+    const currChar = chars[i];
     let count = 0;
-    // Find count of duplicates
-    while(i < n && chars[i] === currChar){
+
+    // Step 1: Count consecutive occurrences of currChar
+    while (i < n && chars[i] === currChar) {
       count++;
       i++;
-
     }
-    // Now assign the currChar and its count
+
+    // Step 2: Write the character once
     chars[index] = currChar;
     index++;
-    if(count > 1) {
-      let countStr = count.toString();
-      console.log({count, countStr})
-      for(let char of countStr){
-        chars[index] = char;
+
+    // Step 3: If there’s repetition, write each digit of count
+    if (count > 1) {
+      const countStr = count.toString();
+      for (let ch of countStr) {
+        chars[index] = ch;
         index++;
       }
     }
   }
+
+  // Step 4: Return new compressed length
   return index;
 }
 
-// Example usage:
-const s = ["a","a","b","b","c","c","c"];
-console.log(compress(s));  // Output: "aba2sas2"
+// // Example usage:
+// const s = ["a", "a", "b", "b", "c", "c", "c"];
+// console.log(compress(s)); // Output: 6
 
+// console.log(
+//   compress(["a", "b", "b", "b", "b", "b", "b", "b", "b", "b", "b", "b", "b"]) // Output: 4
+
+// );
+
+/*
+#Plan
+Approach: Two Pointers Technique
+
+1. Use two pointers - one for reading the original array, one for writing the compressed result
+2. Iterate through the array and count consecutive duplicate characters
+3. For each group of consecutive duplicates:
+   - Write the character at the write pointer
+   - If count > 1, convert count to string and write each digit separately
+4. Return the new length (write pointer position)
+
+Edge Cases to Handle:
+- Single character array
+- Arrays with all unique characters
+- Groups with counts >= 10 (multi-digit)
+- Empty array (though constraints say min length 1)
+
+Time Complexity: O(n) - Single pass through array
+Space Complexity: O(1) - In-place modification, constant extra space
+*/
+/**
+ * Compresses array of characters in-place by replacing consecutive duplicates
+ * with character and count
+ * @param {character[]} chars - Array of characters to compress
+ * @return {number} - New length of the compressed array
+ */
+function compressChorus1(chars) {
+  // Edge case: handle empty or single character arrays immediately
+  if (chars.length === 0) return 0;
+  if (chars.length === 1) return 1;
+
+  let writeIndex = 0; // Tracks where to write compressed characters
+  let readIndex = 0; // Scans through original array
+
+  // Iterate through all characters in the array
+  while (readIndex < chars.length) {
+    const currentChar = chars[readIndex];
+    let count = 0;
+
+    // Count consecutive occurrences of the same character
+    while (readIndex < chars.length && chars[readIndex] === currentChar) {
+      readIndex++;
+      count++;
+    }
+
+    // Write the character to compressed position
+    chars[writeIndex] = currentChar;
+    writeIndex++;
+
+    // If count > 1, write the count as separate digits
+    if (count > 1) {
+      // Convert count to string to handle multi-digit numbers
+      const countStr = count.toString();
+
+      // Write each digit of the count separately
+      for (let i = 0; i < countStr.length; i++) {
+        chars[writeIndex] = countStr[i];
+        writeIndex++;
+      }
+    }
+  }
+
+  // Return the new length of the compressed array
+  return writeIndex;
+}
+
+// Custom Test Cases
+console.log(
+  "Test Case 1:",
+  compressChorus(["a", "a", "b", "b", "c", "c", "c"])
+);
+// Expected: 6, Array: ["a","2","b","2","c","3"]
+
+console.log("Test Case 2:", compressChorus(["a"]));
+// Expected: 1, Array: ["a"]
 
 console.log(
-  compress(["a","b","b","b","b","b","b","b","b","b","b","b","b"])
+  "Test Case 3:",
+  compressChorus([
+    "a",
+    "b",
+    "b",
+    "b",
+    "b",
+    "b",
+    "b",
+    "b",
+    "b",
+    "b",
+    "b",
+    "b",
+    "b",
+  ])
 );
+// Expected: 4, Array: ["a","b","1","2"]
+
+console.log("Test Case 4:", compressChorus(["a", "b", "c"]));
+// Expected: 3, Array: ["a","b","c"] (all unique characters)
+
+console.log(
+  "Test Case 5:",
+  compressChorus(["a", "a", "a", "a", "a", "a", "a", "a", "a", "a"])
+);
+// Expected: 3, Array: ["a","1","0"] (count = 10)
+
+// Edge case: single long sequence
+console.log("Test Case 6:", compressChorus(["x", "x", "x", "x", "x"]));
+// Expected: 2, Array: ["x","5"]

@@ -21,36 +21,108 @@ Reverse-a-Linked-List-in-groups-of-given-size-2
 */
 class Node {
   constructor(val) {
-    this.val === undefined ? 0 : val;
+    this.val = val === undefined ? 0 : val;
     this.next = null;
   }
 }
 
-function reversInSizes(head, k) {
-  let first = new Node(0);
-  first.next = head;
-  head = first;
-  let second, prev, curr, x, front;
-  while (first.next) {
-    x = k;
-    second = first.next;
-    prev = first;
-    curr = first.next;
+class Node {
+  constructor(val) {
+    this.val = val === undefined ? 0 : val;
+    this.next = null;
+  }
+}
 
-    while (x && curr) {
-      front = curr.next;
-      curr.next = prev;
-      prev = curr;
-      curr = front;
-      x--;
+function reverseInGroups(head, k) {
+  if (!head || k <= 1) return head;
+
+  let dummy = new Node(0);
+  dummy.next = head;
+  let groupPrev = dummy; // Node before the current group
+
+  while (groupPrev.next) {
+    // Find the start and end of current group
+    let groupStart = groupPrev.next;
+    let groupEnd = groupStart;
+    let count = 1;
+
+    // Move groupEnd to the k-th node (or last node if group is smaller)
+    while (groupEnd.next && count < k) {
+      groupEnd = groupEnd.next;
+      count++;
     }
 
-    first.next = prev;
-    second.next = curr;
-    first = second;
+    if (count < k) {
+      // Last group has fewer than k nodes, reverse it and break
+      reverseSublist(groupStart, groupEnd);
+      break;
+    }
+
+    // Store the node after current group
+    let nextGroupStart = groupEnd.next;
+
+    // Reverse the current group
+    reverseSublist(groupStart, groupEnd);
+
+    // Connect the reversed group to the list
+    groupPrev.next = groupEnd; // Connect previous group to new group start
+    groupStart.next = nextGroupStart; // Connect new group end to next group
+
+    // Move to next group
+    groupPrev = groupStart;
   }
-  first = head;
-  head = head.next;
-  delete first;
-  return head;
+
+  return dummy.next;
+}
+
+// Helper function to reverse a sublist from start to end
+function reverseSublist(start, end) {
+  let prev = null;
+  let curr = start;
+  let stop = end.next; // The node after end
+
+  while (curr !== stop) {
+    let next = curr.next;
+    curr.next = prev;
+    prev = curr;
+    curr = next;
+  }
+
+  return prev; // Returns the new start of reversed list
+}
+
+function reverseInGroupsIt(head, k) {
+  if (!head || k <= 1) return head;
+
+  let dummy = new Node(0);
+  dummy.next = head;
+  let prevGroupEnd = dummy;
+
+  while (prevGroupEnd.next) {
+    let groupStart = prevGroupEnd.next;
+    let curr = groupStart;
+    let prev = null;
+    let count = 0;
+
+    // Reverse k nodes
+    while (curr && count < k) {
+      let next = curr.next;
+      curr.next = prev;
+      prev = curr;
+      curr = next;
+      count++;
+    }
+
+    // Connect the reversed group
+    prevGroupEnd.next = prev; // Connect previous group to new group start
+    groupStart.next = curr; // Connect new group end to next group
+
+    // Move to next group
+    prevGroupEnd = groupStart;
+
+    // If remaining nodes < k, we're done
+    if (!curr) break;
+  }
+
+  return dummy.next;
 }

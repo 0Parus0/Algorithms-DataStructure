@@ -37,6 +37,131 @@ n == dungeon[i].length
 1 <= m, n <= 200
 -1000 <= dungeon[i][j] <= 1000
 */
+
+/* Bottom up (Tabulation) */
+function calculateMinimumHP(dungeon) {
+  const m = dungeon.length;
+  const n = dungeon[0].length;
+  const dp = Array.from({ length: m }, () => new Array(n).fill(0));
+
+  for (let i = m - 1; i >= 0; i--) {
+    for (let j = n - 1; j >= 0; j--) {
+      if (i === m - 1 && j === n - 1) {
+        dp[i][j] = dungeon[i][j] > 0 ? 1 : Math.abs(dungeon[i][j]) + 1;
+      } else {
+        const down = i + 1 >= m ? Infinity : dp[i + 1][j];
+        const right = j + 1 >= n ? Infinity : dp[i][j + 1];
+
+        const result = Math.min(down, right) - dungeon[i][j];
+        dp[i][j] = result > 0 ? result : 1;
+      }
+    }
+  }
+  return dp[0][0];
+}
+
+/* Propagation (Recursion + Memoization) */
+function calculateMinimumHP(dungeon) {
+  const m = dungeon.length;
+  const n = dungeon[0].length;
+  const dp = Array.from({ length: m }, () => new Array(n).fill(-1));
+
+  function solve(i, j) {
+    if (i >= m || j >= n) return Infinity;
+
+    if (dp[i][j] !== -1) return dp[i][j];
+
+    if (i === m - 1 && j === n - 1) {
+      if (dungeon[i][j] > 0) {
+        return 1;
+      }
+
+      return Math.abs(dungeon[i][j]) + 1;
+    }
+    const right = solve(i, j + 1);
+    const down = solve(i + 1, j);
+
+    const result = Math.min(right, down) - dungeon[i][j];
+
+    dp[i][j] = result > 0 ? result : 1;
+    return dp[i][j];
+  }
+
+  return solve(0, 0);
+}
+
+function calculateMinimumHP(dungeon) {
+  const m = dungeon.length;
+  const n = dungeon[0].length;
+
+  // dp[i][j] represents the min health needed to survive starting from (i, j)
+  const dp = Array.from({ length: m + 1 }, () =>
+    new Array(n + 1).fill(Infinity),
+  );
+
+  // Base Cases:
+  // To survive after the princess (bottom-right), you need at least 1 HP.
+  dp[m][n - 1] = 1;
+  dp[m - 1][n] = 1;
+
+  for (let i = m - 1; i >= 0; i--) {
+    for (let j = n - 1; j >= 0; j--) {
+      // 1. How much health do I need AFTER this room?
+      let healthNeededAfter = Math.min(dp[i + 1][j], dp[i][j + 1]);
+
+      // 2. How much do I need BEFORE this room?
+      // neededBefore + dungeon[i][j] = healthNeededAfter
+      let healthNeededBefore = healthNeededAfter - dungeon[i][j];
+
+      // 3. You must always have at least 1 HP
+      dp[i][j] = Math.max(1, healthNeededBefore);
+    }
+  }
+
+  return dp[0][0];
+}
+
+/* Brute force with binary search on answer */
+
+function calculateMinimumHP(dungeon) {
+  const m = dungeon.length;
+  const n = dungeon[0].length;
+  const dp = new Map();
+
+  let left = 1;
+  let right = 4 * 1e7; // m =200 * n=200 cell value=1000 => 7 zeros and 2 * 2 = 4 so 1e7 * 4
+  let minHealth = 4 * 1e7; // Maximum health
+
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
+    if (canSurvive(0, 0, mid)) {
+      minHealth = mid;
+      right = mid - 1;
+    } else {
+      left = mid + 1;
+    }
+  }
+
+  function canSurvive(i, j, mid) {
+    if (i >= m || j >= n) {
+      return false;
+    }
+
+    mid += dungeon[i][j];
+    if (mid <= 0) return false;
+
+    if (i === m - 1 && j === n - 1) return true;
+    const key = `${i}-${j}-${mid}`;
+    if (dp.has(key)) return dp.get(key);
+    dp.set(key, canSurvive(i, j + 1, mid) || canSurvive(i + 1, j, mid));
+    return dp.get(key);
+  }
+
+  return minHealth;
+}
+
+/* Old */
+
 function calculateMinimumHP(dungeon) {
   const m = dungeon.length;
   const n = dungeon[0].length;

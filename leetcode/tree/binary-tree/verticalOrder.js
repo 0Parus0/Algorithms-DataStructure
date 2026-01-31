@@ -19,6 +19,11 @@ Constraints:
 1 <= number of nodes <= 105
 1 <= node->data <= 105
 */
+class Solution {
+  verticalOrder(root) {
+    if (!root) return [];
+  }
+}
 class SolutionWithTwoArrays {
   verticalOrder(root) {
     // your code here

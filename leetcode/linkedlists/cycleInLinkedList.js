@@ -25,7 +25,23 @@ function detectCycle(head) {
   }
   return false;
 }
-
+/**
+ *
+ * @param {*} head
+ * @returns
+ *
+ * Intuition
+ * From head to startCycle = l1
+ * From startCycle to where slow and fast meet = l2
+ * slow has moved slow = l1 + l2
+ * fast has moved fast (l1 + l2) + nk where n is the number of cycles it took and k is the length of the cycle
+ * As we know fast is moving at double the speed of the slow so
+ * 2 * (l1 + l2) = fast where slow has moved l1 + l2;
+ * but fast = l1 + l2 + nk
+ * 2 * (l1 + l2) = l1 + l2 +nk
+ * l1 + l2 = nk
+ * l1  = nk - l2
+ */
 function countLoopLength(head) {
   let slow = head;
   let fast = head;

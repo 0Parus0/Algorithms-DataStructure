@@ -31,20 +31,24 @@ Constraints:
 */
 
 function rob(nums) {
-  const dp = new Array(nums.length).fill(-1);
+  const n = nums.length;
+  const dp = new Array(n).fill(-1);
 
   function helper(i) {
-    if (i < 0) return 0;
+    if (i >= n) return 0;
     if (dp[i] !== -1) return dp[i];
 
-    dp[i] = Math.max(helper(i - 1), nums[i] + helper(i - 2));
+    const steal = nums[i] + helper(i + 2);
+    const skip = helper(i + 1);
+
+    dp[i] = Math.max(steal, skip);
     return dp[i];
   }
 
-  return helper(nums.length - 1);
+  return helper(0);
 }
 
-function rob(nums) {
+function rob2(nums) {
   if (nums.length === 0) return 0;
   if (nums.length === 1) return nums[0];
 
@@ -60,7 +64,7 @@ function rob(nums) {
   return curr;
 }
 
-function rob(nums) {
+function rob2(nums) {
   if (nums.length === 0) return 0;
   if (nums.length === 1) return nums[0];
 
@@ -75,7 +79,7 @@ function rob(nums) {
   return curr;
 }
 
-function rob(nums) {
+function rob2(nums) {
   const n = nums.length;
   const dp = new Array(n).fill(-1);
   function solve(i) {
@@ -95,7 +99,7 @@ function rob(nums) {
   return solve(0);
 }
 
-function rob(nums) {
+function rob2(nums) {
   if (nums.length === 0) return 0;
   if (nums.length === 1) return nums[0];
 

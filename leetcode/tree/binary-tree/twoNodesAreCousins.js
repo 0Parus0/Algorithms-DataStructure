@@ -22,61 +22,6 @@ Example:
     Explanation: Node with the values 5 and 4 are on the same level with same parent.
 */
 
-function isCousins(root, a, b) {
-  // Edge cases
-  if (!root || a === b) return false;
-  if (!root.left && !root.right) return false; // Single node tree
-
-  // Helper function to check if nodes are siblings
-  function parent(root, a, b) {
-    if (!root) return false;
-
-    // Check if current node is parent of both a and b
-    if (root.left && root.right) {
-      if (root.left.data === a && root.right.data === b) return true;
-      if (root.left.data === b && root.right.data === a) return true;
-    }
-
-    // Recursively check left and right subtrees
-    return parent(root.left, a, b) || parent(root.right, a, b);
-  }
-
-  // BFS for level order traversal
-  const que = [];
-  que.push(root);
-  let l1 = -1; // Level for node a
-  let l2 = -1; // Level for node b
-  let level = 0; // Current level
-
-  while (que.length > 0) {
-    let n = que.length; // Number of nodes at current level
-
-    // Process all nodes at current level
-    while (n--) {
-      let temp = que.shift();
-
-      // Check if current node matches target nodes
-      if (temp.data === a) l1 = level;
-      if (temp.data === b) l2 = level;
-
-      // Add children to queue
-      if (temp.left) que.push(temp.left);
-      if (temp.right) que.push(temp.right);
-    }
-
-    level++; // Move to next level
-
-    // If levels are different, nodes can't be cousins
-    if (l1 !== l2) return false;
-
-    // If both nodes found, break early
-    if (l1 !== -1 && l2 !== -1) break;
-  }
-
-  // Return true if same level and not siblings
-  return !parent(root, a, b);
-}
-
 function areCousins(root, a, b) {
   if (!root || a === b) return false;
   if (!root.right && !root.left) return false;

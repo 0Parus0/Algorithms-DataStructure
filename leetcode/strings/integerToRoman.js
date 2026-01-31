@@ -62,3 +62,57 @@ function intToRoman(number) {
 }
 
 console.log(intToRoman(79));
+/*
+🕒 Time Complexity Analysis
+Step 1: Fixed-size data
+
+The arrays values and symbols each have 13 elements → constant size.
+
+Step 2: Loop iterations
+
+For each of the 13 Roman values, we repeatedly subtract until num < values[i].
+
+The maximum number of Roman symbols you can have for any number ≤ 3999 is about 15 (e.g., "MMMDCCCLXXXVIII" → 15 characters).
+
+✅ So, even though there’s a nested while loop, it never grows with input — it depends only on the number’s value, which is bounded (≤ 3999).
+
+Hence:
+
+𝑇
+(
+𝑛
+)
+=
+𝑂
+(
+1
+)
+T(n)=O(1)
+
+(Technically proportional to the length of the Roman numeral, but that length is bounded by a constant.)
+
+💾 Space Complexity Analysis
+
+The arrays values and symbols are fixed → O(1).
+
+The result string grows to at most 15 characters → O(1).
+
+No additional data structures or recursion.
+
+𝑆
+(
+𝑛
+)
+=
+𝑂
+(
+1
+)
+S(n)=O(1)
+✅ Final Complexities
+Complexity Type	Value	Explanation
+Time Complexity	O(1)	Fixed-size lookup and limited operations for max input 3999
+Space Complexity	O(1)	Constant space for arrays and output string
+
+Would you like me to show a short dry run (e.g., for num = 1904 → "MCMIV") to visualize how the loop executes?
+*/

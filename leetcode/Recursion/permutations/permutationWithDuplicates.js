@@ -35,6 +35,7 @@ function permuteUnique(nums) {
 
     for (let i = 0; i < nums.length; i++) {
       // Skip duplicates: if nums[i] is the same as nums[i-1] and the previous one has not been used in this path
+      console.log({ visited });
       if (i > 0 && nums[i] === nums[i - 1] && !visited[i - 1]) continue;
 
       if (!visited[i]) {
@@ -86,12 +87,11 @@ function permuteUnique2(nums) {
   let result = [];
 
   function helper(index) {
-    let used = new Array(21).fill(0);
-
     if (index === nums.length) {
       result.push([...nums]);
       return;
     }
+    let used = new Array(21).fill(0);
 
     for (let i = index; i < nums.length; i++) {
       if (used[nums[i] + 10] === 0) {
@@ -107,4 +107,4 @@ function permuteUnique2(nums) {
   return result;
 }
 
-console.log(permuteUnique2([1, 1, 2]));
+console.log(permuteUnique([1, 1, 2]));

@@ -26,6 +26,7 @@ Constraints:
     -100 <= Node.val <= 100
 */
 
+// Using two stacks -
 var zigzagLevelOrderLC = function (root) {
   if (!root) return [];
 
@@ -63,6 +64,8 @@ var zigzagLevelOrderLC = function (root) {
 
   return result;
 };
+
+// Using queue
 
 var zigzagLevelOrderOpt = function (root) {
   if (!root) return [];
@@ -162,6 +165,8 @@ function levelOrderGFG(root) {
   }
   return ans;
 }
+
+// Using 2 stacks -
 function levelOrderGFG1(root) {
   if (!root) return [];
 
@@ -194,4 +199,38 @@ function levelOrderGFG1(root) {
   }
 
   return ans;
+}
+
+// Using queue -
+
+function levelOrderGFG(root) {
+  if (!root) return [];
+
+  const result = [];
+  const queue = [root];
+  let rightToLeft = true; // Level 0: Right to Left
+
+  while (queue.length > 0) {
+    const levelSize = queue.length;
+    const level = [];
+
+    for (let i = 0; i < levelSize; i++) {
+      const node = queue.shift();
+
+      if (rightToLeft) {
+        level.unshift(node.val); // R→L (add to front)
+      } else {
+        level.push(node.val); // L→R (add to end)
+      }
+
+      // Always add children in standard order
+      if (node.left) queue.push(node.left);
+      if (node.right) queue.push(node.right);
+    }
+
+    result.push(...level);
+    rightToLeft = !rightToLeft;
+  }
+
+  return result;
 }
