@@ -35,8 +35,21 @@ Constraints:
 
 1 <= nums.length <= 105
 1 <= nums[i] <= 105
-
 */
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var maxAlternatingSum = function (nums) {
+  let even = 0,
+    odd = 0;
+  for (let num of nums) {
+    even = Math.max(even, odd + num);
+    odd = Math.max(odd, even - num);
+  }
+  return even;
+};
+
 function maxAlternatingSum(nums) {
   const n = nums.length;
 
@@ -60,6 +73,31 @@ function maxAlternatingSum(nums) {
 
   return solve(0, true);
 }
+
+var maxAlternatingSum1 = function (nums) {
+  const n = nums.length;
+
+  // dp[i][0] = max alternating sum up to index i, ending with even position
+  // dp[i][1] = max alternating sum up to index i, ending with odd position
+  const dp = new Array(n);
+  for (let i = 0; i < n; i++) {
+    dp[i] = new Array(2).fill(0);
+  }
+
+  // Base cases
+  dp[0][0] = nums[0]; // Take first element as even
+  dp[0][1] = 0; // Can't have odd position with only one element
+
+  for (let i = 1; i < n; i++) {
+    // For even position: either skip current, or add it to odd sequence
+    dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + nums[i]);
+
+    // For odd position: either skip current, or subtract it from even sequence
+    dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - nums[i]);
+  }
+
+  return Math.max(dp[n - 1][0], dp[n - 1][1]);
+};
 
 var maxAlternatingSum = function (nums) {
   const n = nums.length;
@@ -181,7 +219,19 @@ function maxAlternatingSum1(nums) {
     if (isEven) {
       take = nums[i] + dfs(i + 1, false); // Add at even position
     } else {
-      take = -nums[i] + dfs(i + 1, true); // Subtract at odd position
+      take = -nums[i] + dfs(i + 1, true); // Subtract at odd position if (nums.length === 0) return 0;
+      if (nums.length === 1) return nums[0];
+
+      let prev = 0; // dp[i - 2]
+      let curr = 0; // dp[i - 1]
+
+      for (let num of nums) {
+        const temp = curr;
+        curr = Math.max(curr, num + prev);
+        prev = temp;
+      }
+
+      return curr;
     }
 
     dp[i][isEven ? 1 : 0] = Math.max(skip, take);

@@ -45,6 +45,43 @@ Constraints:
 3 <= s.length <= 105
 s consists of only lowercase English letters.
 */
+// ========================================================================
+// 1. Optimal
+// ========================================================================
+
+function countPalindromicSubsequence(s) {
+  let count = 0;
+
+  // We only need to check each lowercase letter (26 total)
+  for (let i = 0; i < 26; i++) {
+    const char = String.fromCharCode(97 + i);
+
+    // Find the first occurrence
+    const first = s.indexOf(char); // if in string then >= 0 else -1
+    // Find the last occurrence
+    const last = s.lastIndexOf(char); // If multiple occurrences then last index
+
+    if (first !== -1 && last !== -1 && last - first > 1) {
+      // Collect unique middle letters in a set
+      const middleChars = new Set();
+      for (let k = first + 1; k < last; k++) {
+        middleChars.add(s[k]);
+
+        // If we have already found all 26  possible letters exit early
+        if (middleChars.size === 26) break;
+      }
+
+      count += middleChars.size;
+    }
+  }
+
+  return count;
+}
+
+// ========================================================================
+// 2. Approach two
+// ========================================================================
+
 function countPalindromicSubsequence(s) {
   const n = s.length;
   const first = new Array(26).fill(-1);
@@ -233,7 +270,7 @@ console.log("\n--- Tracing 'aabca' ---");
 console.log("Character 'a': first=0, last=4");
 console.log("  Between positions 0 and 4: characters at [1,2,3] = 'a','b','c'");
 console.log(
-  "  Unique middles: {'a','b','c'} → 3 palindromes: 'aaa', 'aba', 'aca'"
+  "  Unique middles: {'a','b','c'} → 3 palindromes: 'aaa', 'aba', 'aca'",
 );
 console.log("Character 'b': first=2, last=2 → skip (need at least two)");
 console.log("Character 'c': first=3, last=3 → skip");

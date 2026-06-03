@@ -36,6 +36,94 @@ cards.length == 4
 */
 
 function judgePoint24(cards) {
+  const ops = [
+    (a, b) => a + b,
+    (a, b) => a - b,
+    (a, b) => a * b,
+    (a, b) => a / b,
+  ];
+
+  function dfs(nums) {
+    if (nums.length === 1) return Math.abs(nums[0] - 24) < 0.001;
+
+    for (let i = 0; i < nums.length; i++) {
+      for (let j = 0; j < nums.length; j++) {
+        if (i !== j) {
+          let next = [];
+          for (let k = 0; k < nums.length; k++) {
+            if (k !== i && k !== j) {
+              next.push(nums[k]);
+            }
+          }
+
+          for (const op of ops) {
+            const result = op(nums[i], nums[j]);
+            next.push(result);
+            if (dfs(next)) return true;
+            next.pop();
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  return dfs(cards);
+}
+
+// Example usage:
+console.log(judgePoint24([4, 1, 8, 7])); // Output: true
+console.log(judgePoint24([1, 2, 1, 2])); // Output: false
+
+var judgePoint24 = function (cards) {
+  const eps = 1e-6;
+  const ops = ["+", "-", "*", "/"];
+
+  function dfs(nums) {
+    if (nums.length === 1) {
+      return Math.abs(nums[0] - 24) < eps;
+    }
+
+    for (let i = 0; i < nums.length; i++) {
+      for (let j = 0; j < nums.length; j++) {
+        if (i !== j) {
+          const next = [];
+          for (let k = 0; k < nums.length; k++) {
+            if (k !== i && k !== j) {
+              next.push(nums[k]);
+            }
+          }
+
+          for (const op of ops) {
+            if (op === "+") {
+              next.push(nums[i] + nums[j]);
+            } else if (op === "-") {
+              next.push(nums[i] - nums[j]);
+            } else if (op === "*") {
+              next.push(nums[i] * nums[j]);
+            } else if (op === "/") {
+              if (Math.abs(nums[j]) < eps) continue;
+              next.push(nums[i] / nums[j]);
+            }
+
+            if (dfs(next)) {
+              return true;
+            }
+
+            next.pop();
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  return dfs(cards);
+};
+
+function judgePoint24(cards) {
   const epsilon = 0.1;
 
   function solve(cards) {

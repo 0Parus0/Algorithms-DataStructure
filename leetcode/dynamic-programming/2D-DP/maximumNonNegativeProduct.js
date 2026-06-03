@@ -43,7 +43,101 @@ n == grid[i].length
 -4 <= grid[i][j] <= 4
 */
 
+// ========================================================================
+// 1. Best and Optimal
+// ========================================================================
+var maxProductPath = function (grid) {
+  const MOD = 1e9 + 7;
+  const n = grid.length;
+  const m = grid[0].length;
+  const dpMax = Array.from({ length: n }, () => Array(m).fill(0));
+  const dpMin = Array.from({ length: n }, () => Array(m).fill(0));
+  dpMax[0][0] = dpMin[0][0] = grid[0][0];
+
+  for (let j = 1; j < m; j++) {
+    dpMax[0][j] = dpMin[0][j] = dpMax[0][j - 1] * grid[0][j];
+  }
+
+  for (let i = 1; i < n; i++) {
+    dpMax[i][0] = dpMin[i][0] = dpMax[i - 1][0] * grid[i][0];
+  }
+
+  for (let i = 1; i < n; i++) {
+    for (let j = 1; j < m; j++) {
+      const curr = grid[i][j];
+
+      const candidates = [
+        dpMax[i - 1][j] * curr,
+        dpMin[i - 1][j] * curr,
+        dpMax[i][j - 1] * curr,
+        dpMin[i][j - 1] * curr,
+      ];
+
+      dpMax[i][j] = Math.max(...candidates);
+      dpMin[i][j] = Math.min(...candidates);
+    }
+  }
+  const result = dpMax[n - 1][m - 1];
+  return result < 0 ? -1 : result % MOD;
+};
+
 /* Top down (Recursion + Memoization) */
+
+// ========================================================================
+// 1. Two different dp arrays(2D)
+// ========================================================================
+
+function maxProductPath(grid) {
+  const m = grid.length;
+  const n = grid[0].length;
+  const mod = 1e9 + 7;
+
+  // Two separate DP arrays instead of one 3D array
+  const dpMax = Array.from({ length: m }, () => Array(n).fill(-Infinity));
+  const dpMin = Array.from({ length: m }, () => Array(n).fill(Infinity));
+
+  function solve(i, j) {
+    // Base case
+    if (i === m - 1 && j === n - 1) {
+      dpMax[i][j] = grid[i][j];
+      dpMin[i][j] = grid[i][j];
+      return [dpMax[i][j], dpMin[i][j]];
+    }
+
+    // Check memoization
+    if (dpMax[i][j] !== -Infinity && dpMin[i][j] !== Infinity) {
+      return [dpMax[i][j], dpMin[i][j]];
+    }
+
+    let maxVal = -Infinity;
+    let minVal = Infinity;
+
+    // Move Down
+    if (i + 1 < m) {
+      const [downMax, downMin] = solve(i + 1, j);
+      const candidates = [grid[i][j] * downMax, grid[i][j] * downMin];
+      maxVal = Math.max(maxVal, ...candidates);
+      minVal = Math.min(minVal, ...candidates);
+    }
+
+    // Move Right
+    if (j + 1 < n) {
+      const [rightMax, rightMin] = solve(i, j + 1);
+      const candidates = [grid[i][j] * rightMax, grid[i][j] * rightMin];
+      maxVal = Math.max(maxVal, ...candidates);
+      minVal = Math.min(minVal, ...candidates);
+    }
+
+    // Store results in separate arrays
+    dpMax[i][j] = maxVal;
+    dpMin[i][j] = minVal;
+    return [dpMax[i][j], dpMin[i][j]];
+  }
+
+  const [maxProd] = solve(0, 0);
+  return maxProd >= 0 ? maxProd % mod : -1;
+}
+
 function maxProductPath(grid) {
   const m = grid.length;
   const n = grid[0].length;

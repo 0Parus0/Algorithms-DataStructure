@@ -71,6 +71,19 @@ class Solution {
     return left !== null ? left : right;
   }
 
+  lowestCommonAncestor = function (root, p, q) {
+    const dfs = (node) => {
+      if (!node || node === p || node === q) {
+        return node;
+      }
+      const left = dfs(node.left);
+      const right = dfs(node.right);
+      if (left && right) return node;
+      return left || right;
+    };
+    return dfs(root);
+  };
+
   /**
    * APPROACH 2: Iterative with Parent Pointers
    * Time: O(n), Space: O(n)
@@ -263,7 +276,7 @@ class LCADemo {
         result2.val === 3 &&
         result3.val === 3 &&
         result4.val === 3
-      }`
+      }`,
     );
     console.log();
 
@@ -429,7 +442,7 @@ class LCADemo {
     const result2 = this.solution.lowestCommonAncestorIterative(
       largeRoot,
       p,
-      q
+      q,
     );
     end = performance.now();
     console.log(`Iterative: ${(end - start).toFixed(2)}ms`);

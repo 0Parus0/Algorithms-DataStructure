@@ -102,3 +102,66 @@ console.log(validIPAddress("192.168.01.1"));
 
 console.log(validIPAddress("02001:0db8:85a3:0000:0000:8a2e:0370:7334"));
 // ❌ "Neither" (invalid IPv6 length)
+
+// ========================================================================
+// 2. Regular Expressions
+// ========================================================================
+
+/**
+ *
+ * ***Meta characters***
+ *   \d -> 0-9 digits
+ *   \D not a digit
+ *   \w -> A-Z a-z 0-9 word character
+ *   \W -> not a word character
+ *   \s -> whitespace
+ *   \S -> not a white space
+ *   \b -> word boundary means a word starts here and end here e.g /\b\w{4}\b/ a word of length 4 only
+ *   . -> any character
+ *
+ * ***Quantifiers***
+ * ? 0 or one of the character before it (as an optional character)
+ * ? after a Quantifier makes it not greedy
+ * * 0 or more of the character before it
+ * + one or more of the character before it
+ * {2} exactly 2 of the following meta characters like \d \w etc or literal character
+ * {2,} at least two and as many as possible
+ * {2,8} at least two up to 8 only  3, 4, 5 ... 8 make sure no spaces between the numbers and comma inside the brace
+ * ^ start of the line
+ *  $ end of the line
+ *
+ * ***character Classes***
+ * [abc] [-.] inside character classes the normal special characters like *+ doesn't work, only special characters are -and^
+ *
+ * ***Alterations***
+ * (com|net|edu) -> Either com or net or edu
+ *
+ * ***Groups***
+ * /\d{3}-\d{3}-\d{4}/ -> matches any 3 digits and a dash 3 digits and a dash and 4 digits this is the first group or group 0 "$0 | \0" the whole match "$" sign is for search and replace and "\" is to refer within the regex itself
+ * /(\d{3})-\d{3}-\d{4}/ -> here whatever is inside first pair of parenthesis is 2nd group or group one and if there are more than one pair of parenthesis then the second pair would the the 3rd group or group 2 "$2 | \2"
+ *
+ * \b(\w+)\s\1\b will match the a word appearing twice inside the text like good good
+ *
+ *
+ * ***RegExp in JS***
+ * let r = /abc/ characters inside two slashes is a regex
+ * let s = 'abc' characters inside two single/double/ quotes or backticks is a string
+ * r.test(s) would be a function on regex will return true or false
+ * r.exec(s) would be a function on regex which will return the matching pattern or an array of matching patterns if more than one in the string
+ * s.match(regex) would be a function on strings will return an array of  matching results in the string or null if no match found
+ * 
+ * ***Look Around***
+ * 1. Lookahead Assertions
+Lookahead matches a string only if it is followed (positive) or not followed (negative) by another specific pattern. 
+Positive Lookahead X(?=Y): Matches X only if it is followed by Y.
+Example: /\d+(?=€)/ matches "30" in the string "1 turkey costs 30€" because the number is followed by the euro sign.
+Negative Lookahead X(?!Y): Matches X only if it is not followed by Y.
+Example: /\d+(?!€)/ matches "1" in the same string because "1" is followed by a space, not a euro sign. 
+
+* 2. Lookbehind Assertions
+Lookbehind matches a string only if it is preceded (positive) or not preceded (negative) by another specific pattern. These were introduced in ES2018 and are now widely supported across modern browsers. 
+Positive Lookbehind (?<=Y)X: Matches X only if it is preceded by Y.
+Example: /(?<=\$)\d+/ matches "100" in "$100" because it is preceded by a dollar sign.
+Negative Lookbehind (?<!Y)X: Matches X only if it is not preceded by Y.
+Example: /(?<!-)\d+/ can be used to find only non-negative integers in a list. 
+ */

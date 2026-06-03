@@ -184,3 +184,101 @@ const board2 = [
   [".", ".", ".", ".", "8", ".", ".", "7", "9"],
 ];
 console.log(sodukuSolver(board2));
+javascript;
+/**
+ * @param {character[][]} board
+ * @return {void} Do not return anything, modify board in-place instead.
+ */
+var solveSudoku = function (board) {
+  // 1. Use Int32Arrays for ultra-fast bitwise tracking instead of JS Sets
+  const rows = new Int32Array(9);
+  const cols = new Int32Array(9);
+  const boxes = new Int32Array(9);
+  const emptyCells = [];
+
+  // Initialize the bitmasks with the starting board
+  for (let r = 0; r < 9; r++) {
+    for (let c = 0; c < 9; c++) {
+      if (board[r][c] === ".") {
+        emptyCells.push({ r, c });
+      } else {
+        const val = parseInt(board[r][c], 10);
+        const boxIdx = Math.floor(r / 3) * 3 + Math.floor(c / 3);
+        const mask = 1 << val; // e.g., 5 becomes 100000 in binary
+
+        rows[r] |= mask;
+        cols[c] |= mask;
+        boxes[boxIdx] |= mask;
+      }
+    }
+  }
+
+  function backtrack() {
+    if (emptyCells.length === 0) return true;
+
+    let minCandidates = 10;
+    let bestIdx = -1;
+    let bestMask = 0;
+
+    // 2. O(N) Scan instead of sorting: Find the cell with the fewest candidates (MRV)
+    for (let i = 0; i < emptyCells.length; i++) {
+      const { r, c } = emptyCells[i];
+      const boxIdx = Math.floor(r / 3) * 3 + Math.floor(c / 3);
+
+      // Bitwise OR combines all used numbers for this cell into one integer
+      const used = rows[r] | cols[c] | boxes[boxIdx];
+
+      // Count how many numbers (1-9) are available (bits that are still 0)
+      let candidatesCount = 0;
+      for (let num = 1; num <= 9; num++) {
+        if ((used & (1 << num)) === 0) candidatesCount++;
+      }
+
+      if (candidatesCount < minCandidates) {
+        minCandidates = candidatesCount;
+        bestIdx = i;
+        bestMask = used; // Save the state so we don't have to recalculate it
+      }
+
+      // 3. Ultimate Pruning:
+      if (minCandidates === 0) return false; // Dead end detected instantly
+      if (minCandidates === 1) break; // Naked Single! No need to look further
+    }
+
+    const { r, c } = emptyCells[bestIdx];
+    const boxIdx = Math.floor(r / 3) * 3 + Math.floor(c / 3);
+
+    // 4. O(1) Array Removal: Swap the best cell with the last one and pop
+    emptyCells[bestIdx] = emptyCells[emptyCells.length - 1];
+    emptyCells.pop();
+
+    // 5. Try all valid numbers
+    for (let num = 1; num <= 9; num++) {
+      const mask = 1 << num;
+
+      if ((bestMask & mask) === 0) {
+        // If the number is available
+        // Apply the move
+        board[r][c] = num.toString();
+        rows[r] |= mask;
+        cols[c] |= mask;
+        boxes[boxIdx] |= mask;
+
+        // Recurse
+        if (backtrack()) return true;
+
+        // Undo the move
+        board[r][c] = ".";
+        rows[r] &= ~mask;
+        cols[c] &= ~mask;
+        boxes[boxIdx] &= ~mask;
+      }
+    }
+
+    // Put the cell back into the pool (order doesn't matter because we scan every time)
+    emptyCells.push({ r, c });
+    return false;
+  }
+
+  backtrack();
+};

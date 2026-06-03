@@ -48,3 +48,39 @@ function findSubsequences(nums) {
   backtrack(0, curr);
   return result;
 }
+
+/**
+ * @param {number[]} nums
+ * @return {number[][]}
+ */
+var findSubsequences = function (nums) {
+  let l = nums.length;
+  let op = [];
+
+  const explore = (i, temp) => {
+    // 1. Base Case: If we've reached the end, check if it's a valid subsequence
+    if (i >= l) {
+      if (temp.length >= 2) {
+        op.push([...temp]); // Use [...temp] to push a COPY, not a reference
+      }
+      return;
+    }
+
+    // 2. Inclusion Logic: Try adding the current number
+    if (temp.length === 0 || nums[i] >= temp[temp.length - 1]) {
+      temp.push(nums[i]);
+      explore(i + 1, temp);
+      temp.pop(); // THE FIX: Remove it after exploring so it doesn't stay in 'temp'
+    }
+
+    // 3. Exclusion Logic: Skip the current number and handle duplicates
+    // To avoid duplicates, we only skip if the current number isn't
+    // the same as the last one we just tried (or use a Set)
+    if (nums[i] !== temp[temp.length - 1]) {
+      explore(i + 1, temp);
+    }
+  };
+
+  explore(0, []);
+  return op;
+};

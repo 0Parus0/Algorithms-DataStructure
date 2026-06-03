@@ -80,6 +80,43 @@ str consists only of letters of the English alphabet in uppercase and lowercase.
 */
 // console.log(sortVowels("lyMPH"));
 // console.log(sortVowels("aeipouABC"));
+// ========================================================================
+// 1. Best
+// ========================================================================
+
+function sortVowels(str) {
+  let vowels = [];
+  let vowelSet = new Set("aeiouAEIOU");
+
+  // Collect vowels from the string
+  for (let char of str) {
+    if (vowelSet.has(char)) {
+      vowels.push(char);
+    }
+  }
+
+  // Sort vowels while maintaining the original case
+  vowels.sort();
+
+  // Rebuild the string, replacing vowels in their original positions
+  let result = [];
+  let vowelIndex = 0;
+
+  for (let char of str) {
+    if (vowelSet.has(char)) {
+      result.push(vowels[vowelIndex]);
+      vowelIndex++;
+    } else {
+      result.push(char);
+    }
+  }
+
+  return result.join("");
+}
+
+// ========================================================================
+// 2. Approach
+// ========================================================================
 
 function sortVowelsOld(str) {
   /* To store lowercase letters count */
@@ -193,36 +230,6 @@ function sortVowels1(str) {
       second++;
     }
     first++;
-  }
-
-  return result.join("");
-}
-
-function sortVowels(str) {
-  let vowels = [];
-  let vowelSet = new Set("aeiouAEIOU");
-
-  // Collect vowels from the string
-  for (let char of str) {
-    if (vowelSet.has(char)) {
-      vowels.push(char);
-    }
-  }
-
-  // Sort vowels while maintaining the original case
-  vowels.sort();
-
-  // Rebuild the string, replacing vowels in their original positions
-  let result = [];
-  let vowelIndex = 0;
-
-  for (let char of str) {
-    if (vowelSet.has(char)) {
-      result.push(vowels[vowelIndex]);
-      vowelIndex++;
-    } else {
-      result.push(char);
-    }
   }
 
   return result.join("");

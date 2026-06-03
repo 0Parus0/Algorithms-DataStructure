@@ -37,6 +37,35 @@ All the strings of wordDict are unique.
 function wordBreakII(s, wordDict) {
   const n = s.length;
   const st = new Set(wordDict);
+  const mp = new Map();
+  function solve(str) {
+    if (mp.has(str)) return mp.get(str);
+
+    if (str.length === 0) {
+      return [""];
+    }
+
+    const result = [];
+    for (let l = 1; l <= str.length; l++) {
+      const currWord = str.slice(0, l);
+      if (st.has(currWord)) {
+        const remainingWord = str.slice(l);
+        const remainResult = solve(remainingWord);
+        for (let word of remainResult) {
+          const toAdd = currWord + (word.length ? " " : "") + word;
+          result.push(toAdd);
+        }
+      }
+    }
+    mp.set(str, result);
+    return result;
+  }
+  return solve(s);
+}
+
+function wordBreakII(s, wordDict) {
+  const n = s.length;
+  const st = new Set(wordDict);
   const result = [];
 
   let currSentence = "";
@@ -63,35 +92,6 @@ function wordBreakII(s, wordDict) {
 
   solve(0, currSentence);
   return result;
-}
-
-function wordBreakII(s, wordDict) {
-  const n = s.length;
-  const st = new Set(wordDict);
-  const mp = new Map();
-  function solve(str) {
-    if (mp.has(str)) return mp.get(str);
-
-    if (str.length === 0) {
-      return [""];
-    }
-
-    const result = [];
-    for (let l = 1; l <= str.length; l++) {
-      const currWord = str.slice(0, l);
-      if (st.has(currWord)) {
-        const remainingWord = str.slice(l);
-        const remainResult = solve(remainingWord);
-        for (let word of remainResult) {
-          const toAdd = currWord + (word.length ? " " : "") + word;
-          result.push(toAdd);
-        }
-      }
-    }
-    mp.set(str, result);
-    return result;
-  }
-  return solve(s);
 }
 
 /**

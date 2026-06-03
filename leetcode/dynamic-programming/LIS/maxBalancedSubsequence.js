@@ -50,6 +50,314 @@ Constraints:
 -109 <= nums[i] <= 109
 */
 
+// ========================================================================
+// 0. Brute Force
+// ========================================================================
+
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var maxBalancedSubsequenceSum = function (nums) {
+  const n = nums.length;
+  let maxEl = Math.max(...nums);
+
+  const dp = [...nums];
+
+  let maxSum = -Infinity;
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (nums[i] - i >= nums[j] - j) {
+        dp[i] = Math.max(dp[i], dp[j] + nums[i]);
+        maxSum = Math.max(maxSum, dp[i]);
+      }
+    }
+  }
+
+  return maxSum > maxEl ? maxSum : maxEl;
+};
+
+//-----------------------//
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var maxBalancedSubsequenceSum = function (nums) {
+  const n = nums.length;
+  const maxEl = Math.max(...nums);
+  if (maxEl <= 0) return maxEl;
+
+  const dp = new Map();
+  function solve(prev, curr) {
+    // Base case:
+    if (curr >= n) return 0; // No element sum = 0
+
+    let key = `${prev}-${curr}`;
+    if (dp.has(key)) return dp.get(key);
+
+    let take = -Infinity;
+    let skip = -Infinity;
+
+    if (prev === -1 || nums[curr] - curr >= nums[prev] - prev) {
+      take = nums[curr] + solve(curr, curr + 1);
+    }
+
+    skip = solve(prev, curr + 1);
+    dp.set(key, Math.max(take, skip));
+    return dp.get(key);
+  }
+  return solve(-1, 0);
+};
+
+//------------------------------------//
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var maxBalancedSubsequenceSum = function (nums) {
+  const n = nums.length;
+  const dp = new Map(); // key: a[i], value: max sum ending with this a[i]
+  let result = -Infinity;
+
+  for (let i = 0; i < n; i++) {
+    const currentA = nums[i] - i;
+    let currentMax = nums[i];
+
+    // Find maximum among all keys <= currentA
+    for (const [key, value] of dp) {
+      if (key <= currentA) {
+        currentMax = Math.max(currentMax, value + nums[i]);
+      }
+    }
+
+    // Update dp for currentA
+    if (!dp.has(currentA) || currentMax > dp.get(currentA)) {
+      dp.set(currentA, currentMax);
+    }
+
+    result = Math.max(result, currentMax);
+  }
+
+  return result;
+};
+
+// ========================================================================
+// 1. Intuitive Will Pass All Test Cases
+// ========================================================================
+
+var maxBalancedSubsequenceSum = function (nums) {
+  const n = nums.length;
+  const maxEl = Math.max(...nums);
+  if (maxEl <= 0) return maxEl;
+
+  const keys = [];
+  const values = [];
+
+  // First index where value > target
+  function upperBound(arr, target) {
+    let result = arr.length;
+
+    let left = 0;
+    let right = arr.length - 1;
+
+    while (left <= right) {
+      const mid = Math.floor((left + right) / 2);
+
+      if (arr[mid] > target) {
+        result = mid;
+
+        right = mid - 1;
+      } else {
+        left = mid + 1;
+      }
+    }
+
+    return result;
+  }
+
+  let answer = -Infinity;
+
+  for (let i = 0; i < nums.length; i++) {
+    // key = nums[i] - i
+    const key = nums[i] - i;
+
+    // largest index where key <= current key
+    const idx = upperBound(keys, key) - 1;
+
+    let bestPrev = 0;
+
+    if (idx >= 0) {
+      bestPrev = values[idx];
+    }
+
+    // Either extend previous subsequence
+    // or start fresh
+    const currentDP = nums[i] + Math.max(0, bestPrev);
+
+    answer = Math.max(answer, currentDP);
+
+    // insertion position
+    let pos = upperBound(keys, key);
+
+    // same key already exists
+    if (pos - 1 >= 0 && keys[pos - 1] === key) {
+      // existing dp already better
+      if (values[pos - 1] >= currentDP) {
+        continue;
+      }
+
+      values[pos - 1] = currentDP;
+
+      pos = pos - 1;
+    } else {
+      keys.splice(pos, 0, key);
+      values.splice(pos, 0, currentDP);
+    }
+
+    // Remove dominated states
+    while (pos + 1 < values.length && values[pos + 1] <= values[pos]) {
+      keys.splice(pos + 1, 1);
+      values.splice(pos + 1, 1);
+    }
+  }
+
+  return answer;
+};
+
+// ========================================================================
+// 2. Optimal with Segment tree
+// ========================================================================
+
+var maxBalancedSubsequenceSum = function (nums) {
+  const n = nums.length;
+
+  // Step 1:
+  // Build transformed keys
+  const keys = nums.map((num, i) => num - i);
+
+  // Step 2:
+  // Coordinate compression
+  const sorted = [...new Set(keys)].sort((a, b) => a - b);
+
+  const rank = new Map();
+
+  for (let i = 0; i < sorted.length; i++) {
+    rank.set(sorted[i], i);
+  }
+
+  // Segment Tree
+  const size = sorted.length;
+
+  const segTree = new Array(size * 4).fill(-Infinity);
+
+  // Range maximum query
+  function query(node, left, right, ql, qr) {
+    // No overlap
+    if (right < ql || left > qr) {
+      return -Infinity;
+    }
+
+    // Complete overlap
+    if (ql <= left && right <= qr) {
+      return segTree[node];
+    }
+
+    const mid = Math.floor((left + right) / 2);
+
+    return Math.max(
+      query(node * 2, left, mid, ql, qr),
+      query(node * 2 + 1, mid + 1, right, ql, qr),
+    );
+  }
+
+  // Point update
+  function update(node, left, right, index, value) {
+    if (left === right) {
+      segTree[node] = Math.max(segTree[node], value);
+
+      return;
+    }
+
+    const mid = Math.floor((left + right) / 2);
+
+    if (index <= mid) {
+      update(node * 2, left, mid, index, value);
+    } else {
+      update(node * 2 + 1, mid + 1, right, index, value);
+    }
+
+    segTree[node] = Math.max(segTree[node * 2], segTree[node * 2 + 1]);
+  }
+
+  let answer = -Infinity;
+
+  for (let i = 0; i < n; i++) {
+    const compressedKey = rank.get(keys[i]);
+
+    // Best previous dp among smaller/equal keys
+    let bestPrev = query(1, 0, size - 1, 0, compressedKey);
+
+    if (bestPrev < 0) {
+      bestPrev = 0;
+    }
+
+    const currentDP = nums[i] + bestPrev;
+
+    answer = Math.max(answer, currentDP);
+
+    // Update tree
+    update(1, 0, size - 1, compressedKey, currentDP);
+  }
+
+  return answer;
+};
+
+// ========================================================================
+// 3.  Optimal with Fenwick tree
+// ========================================================================
+
+function maxBalancedSubsequenceSum(nums) {
+  const n = nums.length;
+  const vals = [];
+  for (let i = 0; i < n; i++) {
+    vals.push(nums[i] - i);
+  }
+  const sorted = [...new Set(vals)].sort((a, b) => a - b);
+  const comp = new Map();
+  for (let i = 0; i < sorted.length; i++) {
+    comp.set(sorted[i], i + 1);
+  }
+
+  const m = sorted.length;
+  const bit = new Array(m + 2).fill(-Infinity);
+
+  function update(i, val) {
+    while (i <= m) {
+      bit[i] = Math.max(bit[i], val);
+      i += i & -i;
+    }
+  }
+
+  function query(i) {
+    let res = -Infinity;
+    while (i > 0) {
+      res = Math.max(res, bit[i]);
+      i -= i & -i;
+    }
+    return res;
+  }
+
+  let ans = -Infinity;
+  for (let i = 0; i < n; i++) {
+    const idx = comp.get(vals[i]);
+    const best = Math.max(0, query(idx));
+    const dp = nums[i] + best;
+    ans = Math.max(ans, dp);
+    update(idx, dp);
+  }
+  return ans;
+}
+
 /* Top down DP still TLE */
 
 function maxBalancedSubsequenceSum(nums) {

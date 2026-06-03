@@ -33,10 +33,43 @@ Constraints:
 1950 <= birthi < deathi <= 2050
 */
 
+function maximumPopulation(logs) {
+  let minYear = +Infinity;
+  let maxYear = -Infinity;
+
+  for (const [birth, death] of logs) {
+    minYear = Math.min(minYear, birth);
+    maxYear = Math.max(maxYear, death);
+  }
+
+  const offset = minYear;
+  const changes = new Int8Array(maxYear - minYear);
+
+  for (const [birth, death] of logs) {
+    changes[birth - offset]++;
+    changes[death - offset]--;
+  }
+
+  let maxDiff = 0;
+  let currentDiff = 0;
+  let res = minYear;
+
+  for (let i = 0; i < changes.length; i++) {
+    currentDiff += changes[i];
+    const year = i + offset;
+
+    if (currentDiff > maxDiff) {
+      maxDiff = currentDiff;
+      res = year;
+    }
+  }
+  return res;
+}
+
 /* Difference Array Technique */
 function maximumPopulation(logs) {
   // Initialize a difference array with 0s
-  const diff = new Array(102).fill(0);
+  const diff = new Int8Array(102);
   for (let [birth, death] of logs) {
     // add plus one on the birth and minus one on death
     diff[birth - 1950] += 1;

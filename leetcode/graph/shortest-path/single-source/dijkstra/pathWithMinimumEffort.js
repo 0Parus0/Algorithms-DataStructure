@@ -43,6 +43,122 @@ columns == heights[i].length
 1 <= rows, columns <= 100
 1 <= heights[i][j] <= 106
 */
+
+/**
+ * @param {number[][]} heights
+ * @return {number}
+ */
+
+var delRow = [-1, 0, 1, 0];
+var delCol = [0, 1, 0, -1];
+var minimumEffortPath = function (heights) {
+  const n = heights.length,
+    m = heights[0].length;
+  const dist = Array.from({ length: n }, () => Array(m).fill(Infinity));
+  const pq = new CustomMinPriorityQueue();
+  dist[0][0] = 0;
+  pq.enqueue([0, 0, 0]);
+  while (!pq.isEmpty()) {
+    const [effort, row, col] = pq.dequeue();
+    if (row == n - 1 && col == m - 1) {
+      return effort;
+    }
+
+    for (let i = 0; i < 4; i++) {
+      let nRow = delRow[i] + row;
+      let nCol = delCol[i] + col;
+
+      if (isValid(nRow, nCol, n, m, heights)) {
+        let cost = Math.abs(heights[nRow][nCol] - heights[row][col]);
+        if (Math.max(cost, effort) < dist[nRow][nCol]) {
+          dist[nRow][nCol] = Math.max(cost, effort);
+          pq.enqueue([Math.max(cost, effort), nRow, nCol]);
+        }
+      }
+    }
+  }
+  return -1;
+};
+
+var isValid = function (row, col, n, m, heights) {
+  return row < n && row >= 0 && col < m && col >= 0;
+};
+
+class CustomMinPriorityQueue {
+  constructor() {
+    this.heap = [];
+  }
+
+  enqueue(element) {
+    this.heap.push(element);
+    this.bubbleUp(this.heap.length - 1);
+  }
+
+  dequeue() {
+    if (this.heap.length === 1) return this.heap.pop();
+    const min = this.heap[0];
+    const end = this.heap.pop();
+
+    if (this.heap.length > 0) {
+      this.heap[0] = end;
+      this.bubbleDown(0);
+    }
+    return min;
+  }
+
+  peek() {
+    return this.heap[0];
+  }
+
+  size() {
+    return this.heap.length;
+  }
+
+  isEmpty() {
+    return this.heap.length === 0;
+  }
+
+  bubbleUp(index) {
+    const element = this.heap[index];
+    while (index > 0) {
+      let parentIndex = Math.floor((index - 1) / 2);
+      let parent = this.heap[parentIndex];
+      if (element[0] >= parent[0]) break;
+      this.heap[index] = parent;
+      index = parentIndex;
+    }
+    this.heap[index] = element;
+  }
+
+  bubbleDown(index) {
+    const element = this.heap[index];
+    const length = this.heap.length;
+
+    while (true) {
+      let leftChild = 2 * index + 1;
+      let rightChild = 2 * index + 2;
+      let swap = null;
+
+      if (leftChild < length && this.heap[leftChild][0] < element[0]) {
+        swap = leftChild;
+      }
+      if (rightChild < length) {
+        if (swap === null && this.heap[rightChild][0] < element[0]) {
+          swap = rightChild;
+        } else if (
+          swap !== null &&
+          this.heap[rightChild][0] < this.heap[leftChild][0]
+        ) {
+          swap = rightChild;
+        }
+      }
+      if (swap == null) break;
+      this.heap[index] = this.heap[swap];
+      index = swap;
+    }
+    this.heap[index] = element;
+  }
+}
 class MinHeap {
   constructor(arr = []) {
     this.heap = Array.isArray(arr) ? arr.slice() : [];

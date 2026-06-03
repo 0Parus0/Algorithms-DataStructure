@@ -42,6 +42,22 @@ Constraints:
     At most 104 calls will be made to next.
 */
 
+var StockSpanner = function () {
+  this.stack = [];
+};
+
+StockSpanner.prototype.next = function (price) {
+  let span = 1;
+  while (
+    this.stack.length > 0 &&
+    this.stack[this.stack.length - 1].price <= price
+  ) {
+    span += this.stack.pop().span;
+  }
+  this.stack.push({ price, span });
+  return span;
+};
+
 class StockSpannerL1 {
   constructor() {
     this.stack = []; // Stores [price, span] pairs

@@ -66,7 +66,7 @@ function getHappyString(n, k) {
       curr.pop();
     }
   }
-  solve("");
+  solve([]);
   return result;
 }
 

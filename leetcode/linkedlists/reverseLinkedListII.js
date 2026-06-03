@@ -55,166 +55,81 @@ function ListNode(val, next) {
   return dummy.next;
 }
 
-class ListNode {
-  constructor(val, next) {
-    this.val = val === undefined ? 0 : val;
-    this.next = next === undefined ? null : next;
-  }
+function ListNode(val, next = null) {
+  this.val = val;
+  this.next = next;
 }
 
-var reverseKGroup = function (head, k) {
-  if (!head || k <= 1) return head;
+function reverseBetween(head, left, right) {
+  if (!head || left === right) return head;
 
   let dummy = new ListNode(0);
   dummy.next = head;
-  let prevGroupEnd = dummy;
 
-  while (prevGroupEnd.next) {
-    // Check if there are at least k nodes remaining
-    let count = 0;
-    let checker = prevGroupEnd.next;
-    while (checker && count < k) {
-      checker = checker.next;
-      count++;
-    }
-
-    // If fewer than k nodes remain, leave them as is
-    if (count < k) break;
-
-    // Reverse the next k nodes
-    let groupStart = prevGroupEnd.next;
-    let curr = groupStart;
-    let prev = null;
-    let next = null;
-    count = 0;
-
-    while (curr && count < k) {
-      next = curr.next;
-      curr.next = prev;
-      prev = curr;
-      curr = next;
-      count++;
-    }
-
-    // Connect the reversed group to the list
-    prevGroupEnd.next = prev; // Connect previous group to new group start
-    groupStart.next = curr; // Connect new group end to next group
-
-    // Move to the end of the current reversed group
-    prevGroupEnd = groupStart;
+  // 1. Move 'prev' to the node just before the reversal starts
+  let prev = dummy;
+  for (let i = 1; i < left; i++) {
+    prev = prev.next;
   }
 
-  return dummy.next;
-};
-class ListNode {
-  constructor(val, next) {
-    this.val = val === undefined ? 0 : val;
-    this.next = next === undefined ? null : next;
-  }
-}
+  // 2. 'curr' is the first node of the segment to be reversed
+  let curr = prev.next;
 
-var reverseKGroup1 = function (head, k) {
-  if (!head || k <= 1) return head;
-
-  let dummy = new ListNode(0);
-  dummy.next = head;
-  let prevGroupEnd = dummy;
-
-  while (prevGroupEnd.next) {
-    // Check if we have at least k nodes remaining
-    let groupStart = prevGroupEnd.next;
-    let groupEnd = groupStart;
-    let count = 1;
-
-    while (groupEnd.next && count < k) {
-      groupEnd = groupEnd.next;
-      count++;
-    }
-
-    // If fewer than k nodes, leave them as is
-    if (count < k) break;
-
-    // Store the node after current group
-    let nextGroupStart = groupEnd.next;
-
-    // Reverse the current group using helper function
-    reverseSublist(groupStart, groupEnd);
-
-    // Connect the reversed group to the list
-    prevGroupEnd.next = groupEnd; // Connect previous group to new group start
-    groupStart.next = nextGroupStart; // Connect new group end to next group
-
-    // Move to the end of current reversed group
-    prevGroupEnd = groupStart;
-  }
-
-  return dummy.next;
-};
-
-// Helper function to reverse a sublist from start to end (inclusive)
-function reverseSublist(start, end) {
-  let prev = null;
-  let curr = start;
-  let stop = end.next; // The node after the end
-
-  while (curr !== stop) {
+  // 3. Perform the "shifting" reversal
+  for (let i = 0; i < right - left; i++) {
+    // 'next' is the node we are about to move to the front
     let next = curr.next;
-    curr.next = prev;
-    prev = curr;
-    curr = next;
-  }
 
-  return prev; // Returns the new start of reversed list
-}
-var reverseKGroup2 = function (head, k) {
-  if (!head || k <= 1) return head;
+    // Step A: Cut 'next' out of its current position
+    curr.next = next.next;
 
-  let dummy = new ListNode(0);
-  dummy.next = head;
-  let prevGroupEnd = dummy;
+    // Step B: Point 'next' to the current front of the sub-list
+    next.next = prev.next;
 
-  while (true) {
-    // Check if we have k nodes to reverse
-    let kth = getKthNode(prevGroupEnd, k);
-    if (!kth) break; // Less than k nodes remaining
-
-    let nextGroupStart = kth.next;
-    let groupStart = prevGroupEnd.next;
-
-    // Reverse the k nodes
-    reverseSublist(groupStart, kth);
-
-    // Reconnect the reversed group
-    prevGroupEnd.next = kth; // Connect to new group start
-    groupStart.next = nextGroupStart; // Connect to next group
-
-    // Move to next group
-    prevGroupEnd = groupStart;
+    // Step C: Move 'next' to the position immediately after 'prev'
+    prev.next = next;
   }
 
   return dummy.next;
-};
-
-// Helper to get the k-th node from current position
-function getKthNode(curr, k) {
-  while (curr && k > 0) {
-    curr = curr.next;
-    k--;
-  }
-  return curr;
 }
 
-// Helper to reverse k nodes starting from given node
-function reverseSublist(start, end) {
-  let prev = end.next; // This will be the node after reversal
-  let curr = start;
+function ListNode(val, next = null) {
+  this.val = val;
+  this.next = next;
+}
 
-  while (prev !== end) {
-    let next = curr.next;
-    curr.next = prev;
-    prev = curr;
-    curr = next;
+function reverseBetween(head, left, right) {
+  if (!head || left === right) return head;
+
+  let dummy = new ListNode(0);
+  dummy.next = head;
+  let pre = dummy;
+
+  // Move 'pre' to the node just before the start of the reversal
+  for (let i = 1; i < left; i++) {
+    pre = pre.next;
   }
 
-  return prev;
+  // 'start' will be the first node in the segment to reverse
+  let start = pre.next;
+
+  // 'then' will be the node that will be reversed into place
+  let then = start.next;
+
+  // Perform the reversal
+  for (let i = 0; i < right - left; i++) {
+    start.next = then.next;
+    then.next = pre.next;
+    pre.next = then;
+    then = start.next;
+  }
+
+  return dummy.next;
 }
+
+// Example usage:
+const head = new ListNode(
+  1,
+  new ListNode(2, new ListNode(3, new ListNode(4, new ListNode(5)))),
+);
+console.log(reverseBetween(head, 2, 4)); // Output: [1,4,3,2,5]

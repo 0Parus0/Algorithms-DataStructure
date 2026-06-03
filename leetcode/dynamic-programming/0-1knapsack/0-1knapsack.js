@@ -13,6 +13,86 @@ Given:
 Goal: Maximize the total value without exceeding the capacity. Each item can be taken at most once (0 or 1).
 */
 
+// ========================================================================
+// 1. Recursion + Memoization (left to right)
+// ========================================================================
+
+function knapsackLeftToRight(W, val, wt) {
+  const n = val.length;
+  // Create memoization table
+  const memo = Array(n)
+    .fill()
+    .map(() => Array(W + 1).fill(-1));
+
+  function solve(index, remainingWeight) {
+    // Base case: no items left or no capacity remaining
+    if (index >= n || remainingWeight <= 0) {
+      return 0;
+    }
+
+    // Check if already computed
+    if (memo[index][remainingWeight] !== -1) {
+      return memo[index][remainingWeight];
+    }
+
+    // Option 1: Skip the current item
+    let skip = solve(index + 1, remainingWeight);
+
+    // Option 2: Take the current item if it fits
+    let take = 0;
+    if (wt[index] <= remainingWeight) {
+      take = val[index] + solve(index + 1, remainingWeight - wt[index]);
+    }
+
+    // Store and return the maximum value
+    memo[index][remainingWeight] = Math.max(skip, take);
+    return memo[index][remainingWeight];
+  }
+
+  return solve(0, W);
+}
+
+// ========================================================================
+// 1. Recursion + Memoization (right  to left)
+// ========================================================================
+
+function knapsackRightToLeft(W, val, wt) {
+  const n = val.length;
+  // Create memoization table
+  const memo = Array(n)
+    .fill()
+    .map(() => Array(W + 1).fill(-1));
+
+  function solve(index, remainingWeight) {
+    // Base case: no items left or no capacity remaining
+    if (index < 0 || remainingWeight <= 0) {
+      return 0;
+    }
+
+    // Check if already computed
+    if (memo[index][remainingWeight] !== -1) {
+      return memo[index][remainingWeight];
+    }
+
+    // Option 1: Skip the current item
+    let skip = solve(index - 1, remainingWeight);
+
+    // Option 2: Take the current item if it fits
+    let take = 0;
+    if (wt[index] <= remainingWeight) {
+      take = val[index] + solve(index - 1, remainingWeight - wt[index]);
+    }
+
+    // Store and return the maximum value
+    memo[index][remainingWeight] = Math.max(skip, take);
+    return memo[index][remainingWeight];
+  }
+
+  return solve(n - 1, W);
+}
+
+/*-------------------------------*/
+
 function knapsack(values, weights, W) {
   const n = values.length;
 
@@ -45,6 +125,38 @@ function knapsack(values, weights, W) {
   return solve(n - 1, W);
 }
 
+// ========================================================================
+// 2.  Bottom-Up (Tabulation)
+// ========================================================================
+
+function knapsackBottomUp(W, val, wt) {
+  const n = val.length;
+  // Create DP table: dp[i][w] = max value using first i items with capacity w
+  const dp = Array(n + 1)
+    .fill()
+    .map(() => Array(W + 1).fill(0));
+
+  // Build table bottom-up
+  for (let i = 1; i <= n; i++) {
+    for (let w = 0; w <= W; w++) {
+      // Skip the current item
+      let skip = dp[i - 1][w];
+
+      // Take the current item if it fits
+      let take = 0;
+      if (wt[i - 1] <= w) {
+        take = val[i - 1] + dp[i - 1][w - wt[i - 1]];
+      }
+
+      dp[i][w] = Math.max(skip, take);
+    }
+  }
+
+  return dp[n][W];
+}
+
+/*-----------------------*/
+
 function knapSack(weights, values, capacity) {
   const n = weights.length;
   const dp = Array.from({ length: n }, () => new Array(capacity + 1).fill(0));
@@ -71,29 +183,27 @@ function knapSack(weights, values, capacity) {
   return dp[n - 1][capacity];
 }
 
-function knapSack(weights, values, capacity) {
-  const n = weights.length;
-  let prev = new Array(capacity + 1).fill(0);
-  let curr = new Array(capacity + 1).fill(0);
+// ========================================================================
+// 3. Space Optimized Bottom-Up
+// ========================================================================
 
+function knapsackOptimized(W, val, wt) {
+  const n = val.length;
+  // Use 1D array instead of 2D
+  const dp = new Array(W + 1).fill(0);
+
+  // Iterate through each item
   for (let i = 0; i < n; i++) {
-    for (let w = 0; w <= capacity; w++) {
-      if (weights[i] <= w) {
-        // You can either take this item or skip it
-        curr[w] = Math.max(
-          prev[w], // skip
-          values[i] + prev[w - weights[i]] // take
-        );
-      } else {
-        curr[w] = prev[w]; // item too heavy
-      }
+    // IMPORTANT: Traverse backwards to prevent reusing the same item
+    for (let w = W; w >= wt[i]; w--) {
+      dp[w] = Math.max(dp[w], val[i] + dp[w - wt[i]]);
     }
-    // Move current row results to previous for iteration
-    prev = [...curr];
   }
 
-  return prev[capacity];
+  return dp[W];
 }
+
+/*---------------------------*/
 
 function knapSack1(weights, values, capacity) {
   const n = weights.length;

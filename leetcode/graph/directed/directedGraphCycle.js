@@ -21,6 +21,40 @@ Explanation: no cycle in the graph
 Constraints:
 1 ≤ V, E ≤ 105
 */
+function isCycle(numVertices, edges) {
+  const adj = Array.from({ length: numVertices }, () => []);
+  for (const [u, v] of edges) {
+    adj[u].push(v);
+  }
+
+  const path = new Uint8Array(numVertices); // Using typed arrays for speed
+  const visited = new Uint8Array(numVertices);
+
+  function hasCycle(curr) {
+    visited[curr] = 1;
+    path[curr] = 1;
+
+    for (const neighbor of adj[curr]) {
+      if (path[neighbor]) return true; // Back-edge found
+      if (!visited[neighbor]) {
+        // Only recurse if not visited
+        if (hasCycle(neighbor)) return true;
+      }
+    }
+
+    path[curr] = 0;
+    return false;
+  }
+
+  for (let i = 0; i < numVertices; i++) {
+    if (!visited[i]) {
+      if (hasCycle(i)) return true;
+    }
+  }
+
+  return false;
+}
+
 function isCycle(v, edges) {
   // Build adjacency list
   const adj = Array.from({ length: v }, () => []);
@@ -192,13 +226,13 @@ console.log(
     [1, 2],
     [2, 3],
     [3, 3],
-  ])
+  ]),
 ); // true
 console.log(
   isCycleIterative(3, [
     [0, 1],
     [1, 2],
-  ])
+  ]),
 ); // false
 // Test Case 1: Cycle exists
 console.log(
@@ -207,7 +241,7 @@ console.log(
     [1, 2],
     [2, 3],
     [3, 3],
-  ])
+  ]),
 ); // true
 
 // Test Case 2: No cycle
@@ -215,7 +249,7 @@ console.log(
   isCyclic(3, [
     [0, 1],
     [1, 2],
-  ])
+  ]),
 ); // false
 
 // Test Case 3: Complex cycle
@@ -226,7 +260,7 @@ console.log(
     [2, 3],
     [3, 4],
     [4, 1],
-  ])
+  ]),
 ); // true
 
 // Test Case 4: Disconnected graph with cycle
@@ -237,7 +271,7 @@ console.log(
     [3, 4],
     [4, 5],
     [5, 3],
-  ])
+  ]),
 ); // true
 
 // Test Case 5: Self-loop
@@ -245,5 +279,5 @@ console.log(
   isCyclic(2, [
     [0, 0],
     [0, 1],
-  ])
+  ]),
 ); // true

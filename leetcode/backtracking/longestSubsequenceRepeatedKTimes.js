@@ -42,6 +42,74 @@ n == s.length
 2 <= n < min(2001, k * 8)
 s consists of lowercase English letters.
 */
+
+/**
+ * @param {string} s
+ * @param {number} k
+ * @return {string}
+ */
+var longestSubsequenceRepeatedK = function (s, k) {
+  const n = s.length;
+  // Count frequency
+  const freq = new Array(26).fill(0);
+  for (const ch of s) {
+    freq[ch.charCodeAt(0) - 97]++;
+  }
+
+  // Candidate letters (appear at least k times)
+  const candidates = [];
+  for (let i = 0; i < 26; i++) {
+    if (freq[i] >= k) {
+      candidates.push(String.fromCharCode(97 + i));
+    }
+  }
+  if (candidates.length === 0) return "";
+
+  // Helper: check if seq * k is subsequence of s
+  const isSubseq = (seq) => {
+    const m = seq.length;
+    let j = 0; // pointer in seq
+    let count = 0; // how many copies matched
+    for (let i = 0; i < n; i++) {
+      if (s[i] === seq[j]) {
+        j++;
+        if (j === m) {
+          count++;
+          j = 0;
+          if (count === k) return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  let answer = "";
+  // BFS queue (start with empty string)
+  let queue = [""];
+
+  while (queue.length > 0) {
+    const nextQueue = [];
+    for (const curr of queue) {
+      for (const ch of candidates) {
+        const next = curr + ch;
+        if (isSubseq(next)) {
+          nextQueue.push(next);
+          // Update answer if longer or same length but lex larger
+          if (
+            next.length > answer.length ||
+            (next.length === answer.length && next > answer)
+          ) {
+            answer = next;
+          }
+        }
+      }
+    }
+    queue = nextQueue;
+  }
+
+  return answer;
+};
+
 function longestSubsequenceRepeatedK(s, k) {
   const n = s.length;
   const freq = new Array(26).fill(0);

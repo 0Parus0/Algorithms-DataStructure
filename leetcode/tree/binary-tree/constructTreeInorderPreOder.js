@@ -35,6 +35,28 @@ class Node
 }
 */
 
+function buildTree(inorder, preorder) {
+  // Create a map for O(1) inorder index lookup
+  const inorderMap = new Map();
+  for (let i = 0; i < inorder.length; i++) {
+    inorderMap.set(inorder[i], i);
+  }
+
+  let preIndex = 0;
+  function build(inStart, inEnd) {
+    if (inStart > inEnd) return null;
+    const currentNode = new Node(preorder[preIndex++]);
+    const inIndex = inorderMap.get(currentNode.key);
+
+    currentNode.left = build(inStart, inIndex - 1);
+    currentNode.right = build(inIndex + 1, inEnd);
+
+    return currentNode;
+  }
+
+  return build(0, inorder.length - 1);
+}
+
 /**
  * @param {number[]} inorder
  * @param {number[]} preorder
@@ -64,29 +86,6 @@ class Solution {
   }
 }
 
-class solution1 {
-  buildTree(inorder, preorder) {
-    // Create a map for O(1) inorder index lookup
-    const inorderMap = new Map();
-    for (let i = 0; i < inorder.length; i++) {
-      inorderMap.set(inorder[i], i);
-    }
-
-    let preIndex = 0;
-    function build(inStart, inEnd) {
-      if (inStart > inEnd) return null;
-      const currentNode = new Node(preorder[preIndex++]);
-      const inIndex = inorderMap.get(currentNode.key);
-
-      currentNode.left = build(inStart, inIndex - 1);
-      currentNode.right = build(inIndex + 1, inEnd);
-
-      return currentNode;
-    }
-
-    return build(0, inorder.length - 1);
-  }
-}
 /**
  * Node class for binary tree
  */
@@ -195,7 +194,7 @@ class TreeConstructionDemo {
     console.log("Expected: [8, 7, 6, 1]");
     console.log(
       "Test Passed:",
-      JSON.stringify(output) === JSON.stringify([8, 7, 6, 1])
+      JSON.stringify(output) === JSON.stringify([8, 7, 6, 1]),
     );
     console.log("\n");
   }
@@ -221,7 +220,7 @@ class TreeConstructionDemo {
     console.log("Expected: [3, 4, 1, 5, 2, 0]");
     console.log(
       "Test Passed:",
-      JSON.stringify(output) === JSON.stringify([3, 4, 1, 5, 2, 0])
+      JSON.stringify(output) === JSON.stringify([3, 4, 1, 5, 2, 0]),
     );
     console.log("\n");
   }
@@ -247,7 +246,7 @@ class TreeConstructionDemo {
     console.log("Expected: [2, 5, 4, 3, 1]");
     console.log(
       "Test Passed:",
-      JSON.stringify(output) === JSON.stringify([2, 5, 4, 3, 1])
+      JSON.stringify(output) === JSON.stringify([2, 5, 4, 3, 1]),
     );
     console.log("\n");
   }
@@ -292,7 +291,7 @@ class TreeConstructionDemo {
     console.log("Expected: [4, 3, 2, 1]");
     console.log(
       "Test Passed:",
-      JSON.stringify(output) === JSON.stringify([4, 3, 2, 1])
+      JSON.stringify(output) === JSON.stringify([4, 3, 2, 1]),
     );
     console.log("\n");
   }
@@ -311,12 +310,12 @@ class TreeConstructionDemo {
       this.printTreeStructure(
         root.left,
         prefix + (isLeft ? "│   " : "    "),
-        true
+        true,
       );
       this.printTreeStructure(
         root.right,
         prefix + (isLeft ? "│   " : "    "),
-        false
+        false,
       );
     }
   }

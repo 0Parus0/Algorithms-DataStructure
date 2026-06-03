@@ -207,6 +207,46 @@ Space Complexity: O(n) for storing prefix groups
  * @param {number} k - Divisor for beauty condition
  * @return {number} - Number of beautiful substrings
  */
+
+function countBeautifulSubstrings(s, k) {
+  const n = s.length;
+  const vowelsSet = new Set(["a", "e", "i", "o", "u"]);
+
+  // 1. Find the smallest "p" such that (p/2)^2 is divisible by k.
+  // This is the period after which the "k" condition repeats.
+  let p = 1;
+  while ((p * p) % (k * 4) !== 0) {
+    p++;
+  }
+  // Note: (L/2)^2 % k == 0  is mathematically equivalent to  L^2 % (4k) == 0
+
+  const map = new Map();
+  let balance = 0; // vowels - consonants
+  let result = 0;
+
+  // Initial state: balance 0 at index -1
+  // We store the frequency of (balance, index % p)
+  map.set(`0,${p - 1}`, 1);
+
+  for (let i = 0; i < n; i++) {
+    if (vowelsSet.has(s[i])) {
+      balance++;
+    } else {
+      balance--;
+    }
+
+    const mod = i % p;
+    const key = `${balance},${mod}`;
+
+    if (map.has(key)) {
+      result += map.get(key);
+    }
+
+    map.set(key, (map.get(key) || 0) + 1);
+  }
+
+  return result;
+}
 function countBeautifulSubstrings(s, k) {
   const n = s.length;
   const vowels = new Set(["a", "e", "i", "o", "u"]);
